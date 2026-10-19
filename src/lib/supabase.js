@@ -7,7 +7,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error('VITE_SUPABASE_URL & VITE_SUPABASE_ANON_KEY wajib ada di .env');
 }
 
-// 1. Client Utama (Untuk Login & CRUD sehari-hari)
+// Client Utama (Untuk Login, CRUD, dll)
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     persistSession: true,
@@ -16,11 +16,12 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   }
 });
 
-// 2. Client Khusus SignUp (Admin mendaftarkan kader baru)
-// autoRefreshToken & persistSession dimatikan agar tidak menimpa sesi Admin
+// Client Khusus SignUp (Admin mendaftarkan kader baru)
+// Kita beri storageKey yang berbeda dan mematikan session agar tidak bentrok
 export const supabaseAdminAuth = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     persistSession: false,
-    autoRefreshToken: false
+    autoRefreshToken: false,
+    storageKey: 'supabase-admin-auth-token' // <-- Ini kuncinya
   }
 });
