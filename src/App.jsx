@@ -1,8 +1,10 @@
+import { useEffect } from 'react'; // TAMBAHAN 1: Import useEffect
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import Login from './components/Login';
 import Layout from './components/Layout';
 import InstallPWA from './components/InstallPWA';
+import { syncDataOffline } from './lib/syncData'; // TAMBAHAN 2: Import fungsi sinkronisasi
 
 import DashboardAdmin from './pages/DashboardAdmin';
 import DashboardKoordinator from './pages/DashboardKoordinator';
@@ -44,6 +46,20 @@ function DashboardRouter() {
 
 export default function App() {
   const { user, loading } = useAuth();
+
+  // TAMBAHAN 3: Logika Sinkronisasi Otomatis
+  useEffect(() => {
+    // 1. Coba sinkronisasi saat aplikasi pertama kali dibuka
+    syncDataOffline();
+
+    // 2. Coba sinkronisasi setiap kali HP kembali mendapat sinyal internet
+    window.addEventListener('online', syncDataOffline);
+
+    // Bersihkan listener saat aplikasi ditutup
+    return () => {
+      window.removeEventListener('online', syncDataOffline);
+    };
+  }, []);
 
   if (loading) {
     return (

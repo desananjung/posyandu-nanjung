@@ -4,6 +4,7 @@ import { BIDANG, RW_LIST, POSYANDU_LIST } from '../lib/data';
 import { useAuth } from '../context/AuthContext';
 import { createKegiatan, uploadFoto } from '../lib/api';
 import { Save, X, Camera, Loader2 } from 'lucide-react';
+import { simpanOffline } from '../lib/offlineDB';
 
 export default function InputKegiatan() {
   const { user } = useAuth();
@@ -13,7 +14,7 @@ export default function InputKegiatan() {
   const [form, setForm] = useState({
     tanggal: new Date().toISOString().slice(0, 10),
     posyandu: user?.posyandu || POSYANDU_LIST[0].nama,
-    rw: user?.rw || POSYANDU_LIST[0].rw,
+    rw: user?.rw || POSYANDU_LIST.find(p => p.nama === (user?.posyandu || POSYANDU_LIST[0].nama))?.rw || 'RW01',
     bidang: user?.bidang || 'kesehatan',
     sub_bidang: '',
     nama_kegiatan: '',
@@ -65,6 +66,12 @@ export default function InputKegiatan() {
     setLoading(true);
     try {
       let foto_url = null;
+      if (!navigator.onLine) {
+        await simpanOffline({ ...form, sasaran: Number(form.sasaran), foto_url, status: 'draft' });
+        alert('Anda sedang offline. Data disimpan di HP dan akan dikirim otomatis saat ada internet.');
+        navigate('/dashboard');
+        return;
+      }
       if (file) {
         foto_url = await uploadFoto(file, user.id);
       }
@@ -78,7 +85,14 @@ export default function InputKegiatan() {
 
       navigate('/dashboard');
     } catch (err) {
-      setError(err.message || 'Gagal menyimpan');
+      // JIKA GAGAL KARENA JARINGAN PUTUS DI TENGAH JALAN
+      if (err.message.includes('fetch') || err.message.includes('network')) {
+        await simpanOffline({ ...form, sasaran: Number(form.sasaran), status: 'draft' });
+        alert('Koneksi terputus. Data disimpan di HP dan akan dikirim otomatis saat internet stabil.');
+        navigate('/dashboard');
+      } else {
+        setError(err.message || 'Gagal menyimpan');
+      }
     } finally {
       setLoading(false);
     }
@@ -113,26 +127,32 @@ export default function InputKegiatan() {
             <select
               value={form.bidang}
               onChange={(e) => setForm({ ...form, bidang: e.target.value, sub_bidang: '' })}
-              disabled={isKader && user?.bidang}
-              className="w-full rounded-xl border border-zinc-200 px-3 py-2.5 text-sm bg-zinc-50 disabled:opacity-60 focus:ring-2 focus:ring-emerald-500"
+              // HAPUS disabled={isKader && user?.bidang} agar kader bebas memilih bidang
+              className="w-full rounded-xl border border-zinc-200 px-3 py-2.5 text-sm bg-zinc-50 focus:ring-2 focus:ring-emerald-500"
             >
               {BIDANG.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
             </select>
           </div>
         </div>
 
-        {/* BARIS 2: Posyandu & RW */}
+                {/* BARIS 2: Posyandu & RW */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="text-xs font-semibold block mb-1.5">Pilih Posyandu</label>
             <select 
-              value={POSYANDU_LIST.find(p => p.nama === form.posyandu)?.id || ''} 
-              onChange={handlePosyanduChange}
-              disabled={isKader && user?.posyandu}
-              className="w-full rounded-xl border border-zinc-200 px-3 py-2.5 text-sm bg-zinc-50 disabled:opacity-60 focus:ring-2 focus:ring-emerald-500"
+              value={form.posyandu} 
+              onChange={(e) => {
+                const selectedNama = e.target.value;
+                const selectedPos = POSYANDU_LIST.find(p => p.nama === selectedNama);
+                if (selectedPos) {
+                  setForm({ ...form, posyandu: selectedPos.nama, rw: selectedPos.rw });
+                }
+              }}
+              className="w-full rounded-xl border border-zinc-200 px-3 py-2.5 text-sm bg-zinc-50 focus:ring-2 focus:ring-emerald-500"
             >
               {POSYANDU_LIST.map((p) => (
-                <option key={p.id} value={p.id}>{p.nama} ({p.rw})</option>
+                // Gunakan p.nama sebagai value, bukan p.id
+                <option key={p.id} value={p.nama}>{p.nama} ({p.rw})</option>
               ))}
             </select>
           </div>

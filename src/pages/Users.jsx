@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useProfile } from '../hooks/useProfile';
-import { UserCog, Plus, X, Save, Loader2, Shield } from 'lucide-react';
+import { UserCog, Plus, X, Save, Loader2 } from 'lucide-react';
 import Toast from '../components/Toast';
 import { RW_LIST, POSYANDU_LIST } from '../lib/data';
 import { supabaseAdminAuth, supabase } from '../lib/supabase';
@@ -28,9 +28,10 @@ export default function Users() {
     else setToast({ msg: 'Data user diperbarui', type: 'success' });
   };
 
-  // Fungsi Tambah User Baru (Kader/Koordinator)
+  // Fungsi Tambah User Baru
   const handleAddUser = async (e) => {
     e.preventDefault();
+    
     if (!form.nama || !form.email || !form.password) {
       return setToast({ msg: 'Semua kolom bertanda bintang wajib diisi', type: 'error' });
     }
@@ -40,7 +41,9 @@ export default function Users() {
 
     setSaving(true);
     try {
-      // 1. Daftarkan ke Auth Supabase (menggunakan client khusus)
+      console.log("Memulai proses pendaftaran user...");
+
+      // 1. Daftarkan ke Auth Supabase (menggunakan client khusus Admin)
       const { data, error } = await supabaseAdminAuth.auth.signUp({
         email: form.email,
         password: form.password,
@@ -52,9 +55,14 @@ export default function Users() {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error SignUp:", error);
+        throw error;
+      }
 
-      // 2. Update profilnya dengan RW dan Posyandu (karena trigger hanya membuat nama & role)
+      console.log("User berhasil didaftarkan di Auth:", data.user?.id);
+
+      // 2. Update profilnya dengan RW dan Posyandu
       if (data.user) {
         const { error: profileError } = await supabase
           .from('profiles')
@@ -64,15 +72,21 @@ export default function Users() {
           })
           .eq('id', data.user.id);
           
-        if (profileError) throw profileError;
+        if (profileError) {
+          console.error("Error Update Profile:", profileError);
+          // Kita tidak melempar error di sini agar user tetap terbuat meski update profil gagal
+          setToast({ msg: 'User terbuat, tapi gagal set RW. Periksa database.', type: 'info' });
+        } else {
+          setToast({ msg: `Akun ${form.nama} berhasil dibuat`, type: 'success' });
+        }
       }
 
-      setToast({ msg: `Akun ${form.nama} berhasil dibuat`, type: 'success' });
       setShowModal(false);
       setForm({ nama: '', email: '', password: '', role: 'kader', rw: 'RW01', posyandu: POSYANDU_LIST[0].nama });
       fetchProfiles(); // Refresh tabel
     } catch (err) {
-      setToast({ msg: 'Gagal: ' + err.message, type: 'error' });
+      console.error("Catch Error:", err);
+      setToast({ msg: 'Gagal: ' + (err.message || 'Terjadi kesalahan'), type: 'error' });
     } finally {
       setSaving(false);
     }
@@ -173,7 +187,7 @@ export default function Users() {
           <div className="bg-white rounded-2xl w-full max-w-md shadow-xl overflow-hidden animate-fade-in">
             <div className="p-4 border-b border-zinc-100 flex justify-between items-center bg-zinc-50">
               <h3 className="font-bold text-zinc-900">Tambah Pengguna Baru</h3>
-              <button onClick={() => setShowModal(false)} className="text-zinc-400 hover:text-zinc-700 bg-white rounded-full p-1 shadow-sm">
+              <button type="button" onClick={() => setShowModal(false)} className="text-zinc-400 hover:text-zinc-700 bg-white rounded-full p-1 shadow-sm">
                 <X className="w-5 h-5"/>
               </button>
             </div>
