@@ -7,14 +7,14 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+      includeAssets: ['favicon.ico', 'pwa-192x192.png', 'pwa-512x512.png'],
       manifest: {
         name: 'Posyandu 6 SPM Desa Nanjung',
         short_name: 'Posyandu 6 SPM',
         description: 'Aplikasi Pencatatan dan Pelaporan Posyandu Desa Nanjung',
-        theme_color: '#1A5D1A', // Warna hijau utama aplikasi Anda
+        theme_color: '#1A5D1A',
         background_color: '#F6F7F2',
-        display: 'standalone', // Membuatnya tampil seperti aplikasi native (tanpa address bar)
+        display: 'standalone',
         orientation: 'portrait',
         icons: [
           {
@@ -34,8 +34,39 @@ export default defineConfig({
             purpose: 'any maskable'
           }
         ]
-      }
-    })
+      },
+      // BAGIAN WORKBOX HARUS DI DALAM SINI
+      workbox: {
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/.*\.supabase\.co\/rest\/v1\/kegiatan.*/i,
+            handler: 'NetworkOnly',
+            method: 'POST',
+            options: {
+              backgroundSync: {
+                name: 'supabase-post-queue',
+                options: {
+                  maxRetentionTime: 24 * 60, // Menit (24 jam)
+                },
+              },
+            },
+          },
+          {
+            urlPattern: /^https:\/\/.*\.supabase\.co\/rest\/v1\/sasaran.*/i,
+            handler: 'NetworkOnly',
+            method: 'POST',
+            options: {
+              backgroundSync: {
+                name: 'supabase-post-queue',
+                options: {
+                  maxRetentionTime: 24 * 60,
+                },
+              },
+            },
+          },
+        ],
+      },
+    }),
   ],
   server: {
     port: 5173,
