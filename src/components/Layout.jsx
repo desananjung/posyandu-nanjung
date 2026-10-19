@@ -55,8 +55,8 @@ export default function Layout({ children }) {
       <aside className={`fixed md:sticky top-0 z-50 w-64 h-screen bg-white border-r border-zinc-200 flex flex-col transition-transform ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
         <div className="p-5 border-b border-zinc-100 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-700 text-white grid place-items-center font-bold">
-              DN
+            <div className="w-10 h-10 rounded-xl bg-white border border-zinc-200 grid place-items-center overflow-hidden p-1 shadow-sm">
+            <img src="/logo-desa.png" alt="Logo Desa" className="w-full h-full object-contain" />
             </div>
             <div>
               <div className="font-bold text-sm text-zinc-900">Posyandu 6 SPM</div>

@@ -89,6 +89,7 @@ export default function Laporan() {
         
         {/* Kop Surat (Hanya muncul saat print) */}
         <div className="hidden print:block text-center mb-6 border-b-2 border-black pb-4">
+          <img src="/logo-desa.png" alt="Logo Desa" className="w-20 h-20 object-contain mb-2" />
           <h2 className="text-xl font-bold uppercase">Pemerintah Kabupaten Bandung</h2>
           <h3 className="text-lg font-bold">Kecamatan Margaasih - Desa Nanjung</h3>
           <p className="text-sm mt-1">Laporan Kegiatan Posyandu 6 SPM</p>

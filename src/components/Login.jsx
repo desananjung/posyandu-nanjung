@@ -46,9 +46,9 @@ export default function Login() {
           </div>
           <div className="relative">
             <div className="flex items-center gap-3 mb-8">
-              <div className="w-12 h-12 rounded-2xl bg-white text-[#1A5D1A] grid place-items-center font-bold text-base shadow-sm">
-                DN
-              </div>
+              <div className="w-12 h-12 rounded-2xl bg-white grid place-items-center shadow-sm overflow-hidden p-1">
+                <img src="/logo-desa.png" alt="Logo Desa" className="w-full h-full object-contain" />
+                </div>
               <div className="leading-tight">
                 <div className="font-bold text-[15px]">Desa Nanjung</div>
                 <div className="text-[11px] opacity-80 flex items-center gap-1">
@@ -78,7 +78,7 @@ export default function Login() {
             </div>
           </div>
           <div className="relative text-[10px] opacity-60 mt-8">
-            © 2024 Pemerintah Desa Nanjung · v3.0
+            © 2026 Pemerintah Desa Nanjung · v3.0
           </div>
         </div>
 
