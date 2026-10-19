@@ -49,20 +49,20 @@ export const RW_LIST = Array.from({ length: 13 }, (_, i) =>
 
 // 14 Posyandu beserta lokasi RW-nya
 export const POSYANDU_LIST = [
-  { id: 'dahlia', nama: 'Posyandu dahlia 1', rw: 'RW01' },
-  { id: 'dahlia', nama: 'Posyandu dahlia 2', rw: 'RW02' },
-  { id: 'dahlia', nama: 'Posyandu dahlia 3', rw: 'RW03' },
-  { id: 'dahlia', nama: 'Posyandu dahlia 4', rw: 'RW04' },
-  { id: 'dahlia', nama: 'Posyandu dahlia 5', rw: 'RW05' },
-  { id: 'dahlia', nama: 'Posyandu dahlia 6', rw: 'RW06' }, // Contoh: 1 RW 2 Posyandu
-  { id: 'dahlia', nama: 'Posyandu dahlia 7', rw: 'RW07' },
-  { id: 'dahlia', nama: 'Posyandu dahlia 8', rw: 'RW08' },
-  { id: 'dahlia', nama: 'Posyandu dahlia 9', rw: 'RW09' },
-  { id: 'dahlia', nama: 'Posyandu dahlia 10', rw: 'RW10' },
-  { id: 'dahlia', nama: 'Posyandu dahlia 11', rw: 'RW11' },
-  { id: 'dahlia', nama: 'Posyandu dahlia 12', rw: 'RW12' },
-  { id: 'dahlia', nama: 'Posyandu dahlia 13', rw: 'RW13' },
-  { id: 'dahlia', nama: 'Posyandu dahlia 14', rw: 'RW08' },
+  { id: 'dahlia_1', nama: 'Posyandu dahlia 1', rw: 'RW01' },
+  { id: 'dahlia_2', nama: 'Posyandu dahlia 2', rw: 'RW02' },
+  { id: 'dahlia_3', nama: 'Posyandu dahlia 3', rw: 'RW03' },
+  { id: 'dahlia_4', nama: 'Posyandu dahlia 4', rw: 'RW04' },
+  { id: 'dahlia_5', nama: 'Posyandu dahlia 5', rw: 'RW05' },
+  { id: 'dahlia_6', nama: 'Posyandu dahlia 6', rw: 'RW06' },
+  { id: 'dahlia_7', nama: 'Posyandu dahlia 7', rw: 'RW07' },
+  { id: 'dahlia_8', nama: 'Posyandu dahlia 8', rw: 'RW08' },
+  { id: 'dahlia_9', nama: 'Posyandu dahlia 9', rw: 'RW09' },
+  { id: 'dahlia_10', nama: 'Posyandu dahlia 10', rw: 'RW10' },
+  { id: 'dahlia_11', nama: 'Posyandu dahlia 11', rw: 'RW11' },
+  { id: 'dahlia_12', nama: 'Posyandu dahlia 12', rw: 'RW12' },
+  { id: 'dahlia_13', nama: 'Posyandu dahlia 13', rw: 'RW13' },
+  { id: 'dahlia_14', nama: 'Posyandu dahlia 14', rw: 'RW08' }, // Contoh 1 RW 2 Posyandu
 ];
 
 export const BULAN = [

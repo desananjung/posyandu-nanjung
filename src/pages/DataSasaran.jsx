@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Search, Plus, Trash2, X, Save, Loader2 } from 'lucide-react';
 import { useSasaran } from '../hooks/useSasaran';
-import { BIDANG, RW_LIST, POSYANDU_LIST } from '../lib/data'; // Tambah POSYANDU_LIST
+import { BIDANG, RW_LIST, POSYANDU_LIST } from '../lib/data';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import Toast from '../components/Toast';
@@ -12,7 +12,7 @@ export default function DataSasaran() {
   const [filterRW, setFilterRW] = useState('');
   const [filterPosyandu, setFilterPosyandu] = useState('');
   
-  // Ambil data dari hook (pastikan hook useSasaran Anda mendukung parameter ke-3 atau abaikan)
+  // Ambil data dari hook
   const { sasaran, loading, fetchSasaran } = useSasaran(filterBidang, filterRW);
   
   const [search, setSearch] = useState('');
@@ -60,27 +60,18 @@ export default function DataSasaran() {
         nama: '', kategori: '', bidang: 'kesehatan', 
         rw: user?.rw || 'RW01', posyandu: user?.posyandu || POSYANDU_LIST[0].nama, jenis_kelamin: 'L' 
       });
-      fetchSasaran(); // Refresh tabel
+      fetchSasaran();
     }
     setSaving(false);
   };
 
   const handleHapus = async (id) => {
     if (!confirm('Yakin ingin menghapus data ini?')) return;
-    
-    // Soft delete (ubah status aktif jadi false)
     const { error } = await supabase.from('sasaran').update({ aktif: false }).eq('id', id);
-    
     if (!error) {
       setToast({ msg: 'Data berhasil dihapus', type: 'info' });
       fetchSasaran();
     }
-  };
-
-  // Fungsi untuk sinkronisasi RW saat Posyandu diganti di form
-  const handlePosyanduFormChange = (e) => {
-    const selected = POSYANDU_LIST.find(p => p.nama === e.target.value);
-    setForm({ ...form, posyandu: selected.nama, rw: selected.rw });
   };
 
   return (
@@ -102,7 +93,6 @@ export default function DataSasaran() {
 
       {/* Filter & Search Box */}
       <div className="bg-white border border-zinc-200 rounded-2xl p-4 flex flex-col lg:flex-row gap-3">
-        {/* Search Bar */}
         <div className="relative flex-1">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
           <input
@@ -114,7 +104,6 @@ export default function DataSasaran() {
           />
         </div>
         
-        {/* Dropdown Filters */}
         <div className="flex flex-wrap gap-2">
           <select value={filterBidang} onChange={e => setFilterBidang(e.target.value)} className="rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500">
             <option value="">Semua Bidang</option>
@@ -202,9 +191,25 @@ export default function DataSasaran() {
               
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-bold text-zinc-700 block mb-1">Posyandu</label>
-                  <select value={form.posyandu} onChange={handlePosyanduFormChange} className="w-full rounded-xl border border-zinc-200 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500" disabled={user?.role === 'kader'}>
-                    {POSYANDU_LIST.map(p => <option key={p.id} value={p.nama}>{p.nama}</option>)}
+                  <label className="text-xs font-bold text-zinc-700 block mb-1">Pilih Posyandu</label>
+                  <select 
+                    value={POSYANDU_LIST.find(p => p.nama === form.posyandu)?.id || ''} 
+                    onChange={(e) => {
+                      const selectedId = e.target.value;
+                      const selectedPos = POSYANDU_LIST.find(p => p.id === selectedId);
+                      if (selectedPos) {
+                        setForm(prev => ({ 
+                          ...prev, 
+                          posyandu: selectedPos.nama, 
+                          rw: selectedPos.rw 
+                        }));
+                      }
+                    }} 
+                    className="w-full rounded-xl border border-zinc-200 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500"
+                  >
+                    {POSYANDU_LIST.map(p => (
+                      <option key={p.id} value={p.id}>{p.nama}</option>
+                    ))}
                   </select>
                 </div>
                 <div>
