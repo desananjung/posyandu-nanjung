@@ -1,11 +1,8 @@
-import { useEffect } from 'react'; // TAMBAHAN 1: Import useEffect
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import Login from './components/Login';
 import Layout from './components/Layout';
 import InstallPWA from './components/InstallPWA';
-import { syncDataOffline } from './lib/syncData'; // TAMBAHAN 2: Import fungsi sinkronisasi
-import LaporanKader from './pages/LaporanKader';
 
 import DashboardAdmin from './pages/DashboardAdmin';
 import DashboardKoordinator from './pages/DashboardKoordinator';
@@ -15,6 +12,7 @@ import InputKegiatan from './pages/InputKegiatan';
 import DataSasaran from './pages/DataSasaran';
 import Monitoring from './pages/Monitoring';
 import Laporan from './pages/Laporan';
+import LaporanKader from './pages/LaporanKader'; // <-- Pastikan ini di-import
 import Users from './pages/Users';
 import Settings from './pages/Settings';
 
@@ -24,10 +22,7 @@ function Protected({ children, roles }) {
   if (loading) {
     return (
       <div className="min-h-screen grid place-items-center">
-        <div className="text-center">
-          <div className="w-10 h-10 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto" />
-          <div className="mt-3 text-sm text-zinc-500">Memuat...</div>
-        </div>
+        <div className="w-10 h-10 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto" />
       </div>
     );
   }
@@ -48,20 +43,6 @@ function DashboardRouter() {
 export default function App() {
   const { user, loading } = useAuth();
 
-  // TAMBAHAN 3: Logika Sinkronisasi Otomatis
-  useEffect(() => {
-    // 1. Coba sinkronisasi saat aplikasi pertama kali dibuka
-    syncDataOffline();
-
-    // 2. Coba sinkronisasi setiap kali HP kembali mendapat sinyal internet
-    window.addEventListener('online', syncDataOffline);
-
-    // Bersihkan listener saat aplikasi ditutup
-    return () => {
-      window.removeEventListener('online', syncDataOffline);
-    };
-  }, []);
-
   if (loading) {
     return (
       <div className="min-h-screen grid place-items-center">
@@ -79,11 +60,12 @@ export default function App() {
         <Route path="/sasaran" element={<Protected><DataSasaran /></Protected>} />
         <Route path="/monitoring" element={<Protected roles={['admin', 'koordinator']}><Monitoring /></Protected>} />
         <Route path="/laporan" element={<Protected roles={['admin', 'koordinator']}><Laporan /></Protected>} />
+        {/* TAMBAHKAN RUTE INI */}
+        <Route path="/laporan-kader" element={<Protected roles={['kader', 'admin', 'koordinator']}><LaporanKader /></Protected>} />
         <Route path="/users" element={<Protected roles={['admin']}><Users /></Protected>} />
         <Route path="/settings" element={<Protected roles={['admin']}><Settings /></Protected>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-      <Route path="/laporan-kader" element={<Protected roles={['kader', 'admin', 'koordinator']}><LaporanKader /></Protected>} />
       
       {/* Tombol Instal PWA hanya muncul jika user sudah login */}
       {user && <InstallPWA />}
