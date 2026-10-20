@@ -4,9 +4,9 @@ import { MapPin, Eye, EyeOff, ArrowRight, Wifi, WifiOff, Loader2 } from 'lucide-
 import { useAuth } from '../context/AuthContext';
 
 const DEMO = [
-  { email: 'admin@nanjung.local', pass: 'admin123', role: 'Admin Desa' },
-  { email: 'koord@nanjung.local', pass: 'koord123', role: 'Koordinator' },
-  { email: 'kader01@nanjung.local', pass: 'kader123', role: 'Kader RW03' }
+  //{ email: 'admin@nanjung.local', pass: 'admin123', role: 'Admin Desa' },
+  //{ email: 'koord@nanjung.local', pass: 'koord123', role: 'Koordinator' },
+  //{ email: 'kader01@nanjung.local', pass: 'kader123', role: 'Kader RW03' }
 ];
 
 export default function Login() {
