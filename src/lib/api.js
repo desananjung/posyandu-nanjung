@@ -41,8 +41,21 @@ export const createKegiatan = async (payload) => {
     .insert(payload)
     .select()
     .single();
-  if (error) throw error;
+  if (error) {
+    console.error("Error Supabase:", error);
+    throw error;
+  }
   return data;
+};
+
+export const deleteKegiatan = async (id) => {
+  const { error } = await supabase
+    .from('kegiatan')
+    .delete()
+    .eq('id', id);
+  
+  if (error) throw error;
+  return true;
 };
 
 export const updateKegiatan = async (id, payload) => {
@@ -56,20 +69,22 @@ export const updateKegiatan = async (id, payload) => {
   return data;
 };
 
-export const deleteKegiatan = async (id) => {
-  const { error } = await supabase.from('kegiatan').delete().eq('id', id);
-  if (error) throw error;
-};
+
 
 // ============ FOTO ============
 
 export const uploadFoto = async (file, userId) => {
+  
+  const arrayBuffer = await file.arrayBuffer();
   const ext = file.name.split('.').pop();
   const filename = `${userId}/${Date.now()}.${ext}`;
 
   const { error: uploadError } = await supabase.storage
     .from('foto-kegiatan')
-    .upload(filename, file);
+    .upload(filename, arrayBuffer, {
+        contentType: file.type || 'image/png', // Wajib: beri tahu tipe file
+        upsert: true
+    });
 
   if (uploadError) throw uploadError;
 

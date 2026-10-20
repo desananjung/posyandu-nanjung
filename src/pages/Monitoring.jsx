@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useKegiatan } from '../hooks/useKegiatan';
-import { AlertCircle, CheckCircle } from 'lucide-react';
+import { AlertCircle, CheckCircle, Trash2 } from 'lucide-react';
 import Toast from '../components/Toast';
+import { deleteKegiatan } from '../lib/api';
 
 export default function Monitoring() {
-  const { kegiatan, loading, updateStatus } = useKegiatan();
+  // Tambahkan fetchKegiatan agar tabel bisa refresh setelah data dihapus
+  const { kegiatan, loading, updateStatus, fetchKegiatan } = useKegiatan();
   const [toast, setToast] = useState(null);
 
   // Filter kegiatan yang punya tindak lanjut dan belum selesai
@@ -16,6 +18,18 @@ export default function Monitoring() {
     const { error } = await updateStatus(id, 'final');
     if (error) setToast({ msg: 'Gagal update status', type: 'error' });
     else setToast({ msg: 'Tindak lanjut diselesaikan', type: 'success' });
+  };
+
+  const handleHapus = async (id) => {
+    if (!window.confirm("Yakin ingin menghapus data kegiatan ini secara permanen?")) return;
+    
+    try {
+      await deleteKegiatan(id);
+      setToast({ msg: 'Kegiatan berhasil dihapus', type: 'success' });
+      fetchKegiatan(); // Refresh tabel
+    } catch (err) {
+      setToast({ msg: 'Gagal menghapus: ' + err.message, type: 'error' });
+    }
   };
 
   if (loading) return <div className="p-10 text-center">Memuat data...</div>;
@@ -52,12 +66,20 @@ export default function Monitoring() {
                   {item.tindak_lanjut}
                 </div>
               </div>
-              <div className="flex items-center">
+              <div className="flex flex-col md:flex-row items-center gap-2">
                 <button
                   onClick={() => handleSelesai(item.id)}
                   className="w-full md:w-auto inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition"
                 >
                   <CheckCircle className="w-4 h-4" /> Tandai Selesai
+                </button>
+                
+                <button
+                  onClick={() => handleHapus(item.id)}
+                  className="w-full md:w-auto inline-flex items-center justify-center gap-2 bg-rose-50 hover:bg-rose-100 text-rose-600 px-5 py-2.5 rounded-xl text-sm font-bold transition border border-rose-200"
+                  title="Hapus Kegiatan"
+                >
+                  <Trash2 className="w-4 h-4" /> Hapus
                 </button>
               </div>
             </div>

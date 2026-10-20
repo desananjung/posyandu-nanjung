@@ -44,7 +44,7 @@ export default defineConfig({
             method: 'POST',
             options: {
               backgroundSync: {
-                name: 'supabase-post-queue',
+                name: 'kegiatan-post-queue',
                 options: {
                   maxRetentionTime: 24 * 60, // Menit (24 jam)
                 },
@@ -57,7 +57,7 @@ export default defineConfig({
             method: 'POST',
             options: {
               backgroundSync: {
-                name: 'supabase-post-queue',
+                name: 'sasaran-post-queue',
                 options: {
                   maxRetentionTime: 24 * 60,
                 },
