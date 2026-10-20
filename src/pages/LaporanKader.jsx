@@ -216,7 +216,7 @@ export default function LaporanKader() {
             <p>Mengetahui,</p>
             <p>Kepala Desa Nanjung</p>
             <div className="h-20"></div>
-            <p className="font-bold underline">H. Dadan Supardan</p>
+            <p className="font-bold underline">DIAN IRAWAN.SE</p>
           </div>
           <div className="text-center w-64">
             <p>Nanjung, {new Date().toLocaleDateString('id-ID')}</p>
