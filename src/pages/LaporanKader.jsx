@@ -13,20 +13,31 @@ export default function LaporanKader() {
   const [jumlahKader, setJumlahKader] = useState(0);
 
   // Ambil jumlah kader aktif di RW yang sama
+    // Ambil jumlah kader aktif di Posyandu yang sama
   useEffect(() => {
     const fetchKader = async () => {
-      const { count, error } = await supabase
+      let query = supabase
         .from('profiles')
         .select('*', { count: 'exact', head: true })
-        .eq('role', 'kader')
-        .eq('posyandu', user.posyandu);
+        .eq('role', 'kader');
+
+      // Hitung berdasarkan nama Posyandu (lebih akurat jika 1 RW ada 2 Posyandu)
+      if (user?.posyandu) {
+        query = query.eq('posyandu', user.posyandu);
+      } 
+      // Jika user tidak punya data posyandu, fallback ke RW
+      else if (user?.rw) {
+        query = query.eq('rw', user.rw);
+      }
+
+      const { count, error } = await query;
         
       if (!error && count !== null) {
         setJumlahKader(count);
       }
     };
     
-    if (user?.rw) fetchKader();
+    if (user) fetchKader();
   }, [user]);
 
   // Filter kegiatan milik kader ini dan bulan yang dipilih

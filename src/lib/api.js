@@ -198,3 +198,29 @@ export const deleteSasaran = async (id) => {
   if (error) throw error;
   return true;
 };
+
+// ============ MANAJEMEN USER ============
+
+export const updateUserProfile = async (id, payload) => {
+  const { data, error } = await supabase
+    .from('profiles')
+    .update(payload)
+    .eq('id', id)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+};
+
+export const deleteUserProfile = async (id) => {
+  // 1. Nonaktifkan profil
+  const { error: errProfile } = await supabase
+    .from('profiles')
+    .update({ aktif: false, nama: 'User Dihapus' })
+    .eq('id', id);
+  if (errProfile) throw errProfile;
+
+  // 2. Ubah email di auth agar tidak bisa login (opsional, jika Anda punya akses)
+  // Jika tidak punya akses, setidaknya profil sudah dinonaktifkan.
+  return true;
+};
