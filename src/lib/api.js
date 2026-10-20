@@ -48,16 +48,6 @@ export const createKegiatan = async (payload) => {
   return data;
 };
 
-export const deleteKegiatan = async (id) => {
-  const { error } = await supabase
-    .from('kegiatan')
-    .delete()
-    .eq('id', id);
-  
-  if (error) throw error;
-  return true;
-};
-
 export const updateKegiatan = async (id, payload) => {
   const { data, error } = await supabase
     .from('kegiatan')
@@ -69,12 +59,19 @@ export const updateKegiatan = async (id, payload) => {
   return data;
 };
 
-
+// Fungsi Hapus (Hanya ada SATU sekarang)
+export const deleteKegiatan = async (id) => {
+  const { error } = await supabase
+    .from('kegiatan')
+    .delete()
+    .eq('id', id);
+  if (error) throw error;
+  return true;
+};
 
 // ============ FOTO ============
 
 export const uploadFoto = async (file, userId) => {
-  
   const arrayBuffer = await file.arrayBuffer();
   const ext = file.name.split('.').pop();
   const filename = `${userId}/${Date.now()}.${ext}`;
@@ -82,7 +79,7 @@ export const uploadFoto = async (file, userId) => {
   const { error: uploadError } = await supabase.storage
     .from('foto-kegiatan')
     .upload(filename, arrayBuffer, {
-        contentType: file.type || 'image/png', // Wajib: beri tahu tipe file
+        contentType: file.type || 'image/png',
         upsert: true
     });
 
@@ -145,6 +142,7 @@ export const createSasaran = async (payload) => {
   if (error) throw error;
   return data;
 };
+
 // ============ UTILITY EKSPOR ============
 
 export const exportToCSV = (data, filename = 'laporan.csv') => {

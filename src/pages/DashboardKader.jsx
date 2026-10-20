@@ -1,25 +1,32 @@
-import { useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { 
-  ClipboardList, Users, PlusCircle, CheckCircle2, 
-  Calendar, AlertCircle, MapPin
+  ClipboardList, Users, PlusCircle, Calendar, AlertCircle, Trash2, Edit 
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useKegiatan } from '../hooks/useKegiatan';
+import { deleteKegiatan } from '../lib/api';
+import ModalEditKegiatan from '../components/ModalEditKegiatan';
 import { BIDANG } from '../lib/data';
+import Toast from '../components/Toast';
 import { 
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid 
 } from 'recharts';
 
 export default function DashboardKader() {
   const { user } = useAuth();
-  const { kegiatan, loading } = useKegiatan();
+  // Pastikan fetchKegiatan diambil dari hook untuk me-refresh data setelah dihapus/edit
+  const { kegiatan, loading, fetchKegiatan } = useKegiatan();
+  
+  const [selectedKegiatan, setSelectedKegiatan] = useState(null);
+  const [toast, setToast] = useState(null);
 
   // Filter kegiatan hanya untuk RW kader ini
   const myKegiatan = useMemo(() => {
-    return kegiatan.filter(k => k.rw === user.rw);
-  }, [kegiatan, user.rw]);
+    return kegiatan.filter(k => k.rw === user?.rw);
+  }, [kegiatan, user?.rw]);
 
+  // Perhitungan statistik
   const stat = useMemo(() => {
     const total = myKegiatan.length;
     const sasaran = myKegiatan.reduce((a, k) => a + (Number(k.sasaran) || 0), 0);
@@ -32,12 +39,23 @@ export default function DashboardKader() {
     return BIDANG.map(b => ({
       name: b.short,
       jumlah: myKegiatan.filter(k => k.bidang === b.id).length
-    })).filter(d => d.jumlah > 0); // Hanya tampilkan yang ada datanya
+    })).filter(d => d.jumlah > 0);
   }, [myKegiatan]);
 
   const hariIni = new Date().toLocaleDateString('id-ID', { 
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' 
   });
+
+  const handleHapus = async (id) => {
+    if (!window.confirm("Yakin ingin menghapus kegiatan ini secara permanen?")) return;
+    try {
+      await deleteKegiatan(id);
+      setToast({ msg: 'Kegiatan berhasil dihapus', type: 'success' });
+      fetchKegiatan(); // Refresh data
+    } catch (err) {
+      setToast({ msg: 'Gagal menghapus: ' + err.message, type: 'error' });
+    }
+  };
 
   if (loading) {
     return (
@@ -48,7 +66,9 @@ export default function DashboardKader() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
+      {toast && <Toast message={toast.msg} type={toast.type} onClose={() => setToast(null)} />}
+
       {/* Banner Sambutan */}
       <div className="bg-emerald-700 rounded-2xl p-6 md:p-8 text-white shadow-lg relative overflow-hidden">
         <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full" />
@@ -125,26 +145,44 @@ export default function DashboardKader() {
                 <p className="text-sm text-zinc-500">Anda belum menginput kegiatan apapun.</p>
               </div>
             ) : (
-              myKegiatan.slice(0, 5).map((k) => {
+              myKegiatan.slice(0, 10).map((k) => {
                 const b = BIDANG.find(x => x.id === k.bidang);
                 return (
-                  <div key={k.id} className="p-4 hover:bg-zinc-50 transition flex items-center gap-4">
+                  <div key={k.id} className="p-4 hover:bg-zinc-50 transition flex flex-col md:flex-row md:items-center gap-4">
                     <div className="w-10 h-10 rounded-xl grid place-items-center shrink-0" style={{ background: b?.light, color: b?.color }}>
                       {b && <b.icon className="w-5 h-5" />}
                     </div>
+                    
                     <div className="min-w-0 flex-1">
                       <div className="font-bold text-sm text-zinc-900 truncate">{k.nama_kegiatan}</div>
                       <div className="text-xs text-zinc-500 flex items-center gap-2 mt-0.5">
                         <span>{k.tanggal}</span>
                         <span>·</span>
                         <span>{k.sasaran} sasaran</span>
+                        <span>·</span>
+                        <span className={`font-bold ${k.status === 'draft' ? 'text-amber-600' : 'text-emerald-600'}`}>
+                          {k.status === 'draft' ? 'Draft' : 'Terverifikasi'}
+                        </span>
                       </div>
                     </div>
-                    <span className={`text-[10px] px-2 py-1 rounded-full font-bold shrink-0 ${
-                      k.status === 'draft' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'
-                    }`}>
-                      {k.status === 'draft' ? 'Draft' : 'Terverifikasi'}
-                    </span>
+                    
+                    {/* TOMBOL AKSI (Edit & Hapus) */}
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button 
+                        onClick={() => setSelectedKegiatan(k)} 
+                        className="p-2 text-emerald-600 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition"
+                        title="Edit Kegiatan"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={() => handleHapus(k.id)} 
+                        className="p-2 text-rose-600 bg-rose-50 rounded-lg hover:bg-rose-100 transition"
+                        title="Hapus Kegiatan"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 );
               })
@@ -181,6 +219,15 @@ export default function DashboardKader() {
           )}
         </div>
       </div>
+
+      {/* Modal Edit (Hanya muncul jika ada kegiatan yang dipilih) */}
+      {selectedKegiatan && (
+        <ModalEditKegiatan 
+          kegiatan={selectedKegiatan} 
+          onClose={() => setSelectedKegiatan(null)} 
+          onRefresh={fetchKegiatan} 
+        />
+      )}
     </div>
   );
 }
