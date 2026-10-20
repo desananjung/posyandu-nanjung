@@ -14,3 +14,19 @@
   /* Pastikan teks hitam */
   * { color: black !important; }
 }
+/* --- PRINT STYLES UNTUK LAPORAN --- */
+@media print {
+  @page {
+    size: landscape; /* Laporan lebar jadi lebih baik landscape */
+    margin: 1cm;
+  }
+  body {
+    background: white;
+  }
+  .print\:hidden {
+    display: none !important;
+  }
+  .page-break-inside-avoid {
+    page-break-inside: avoid;
+  }
+}

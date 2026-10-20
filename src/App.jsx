@@ -5,6 +5,7 @@ import Login from './components/Login';
 import Layout from './components/Layout';
 import InstallPWA from './components/InstallPWA';
 import { syncDataOffline } from './lib/syncData'; // TAMBAHAN 2: Import fungsi sinkronisasi
+import LaporanKader from './pages/LaporanKader';
 
 import DashboardAdmin from './pages/DashboardAdmin';
 import DashboardKoordinator from './pages/DashboardKoordinator';
@@ -82,6 +83,7 @@ export default function App() {
         <Route path="/settings" element={<Protected roles={['admin']}><Settings /></Protected>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <Route path="/laporan-kader" element={<Protected roles={['kader', 'admin', 'koordinator']}><LaporanKader /></Protected>} />
       
       {/* Tombol Instal PWA hanya muncul jika user sudah login */}
       {user && <InstallPWA />}

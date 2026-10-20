@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { 
-  ClipboardList, Users, PlusCircle, Calendar, AlertCircle, Trash2, Edit 
+  ClipboardList, Users, PlusCircle, Calendar, AlertCircle, Trash2, Edit, Printer 
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useKegiatan } from '../hooks/useKegiatan';
@@ -15,7 +15,6 @@ import {
 
 export default function DashboardKader() {
   const { user } = useAuth();
-  // Pastikan fetchKegiatan diambil dari hook untuk me-refresh data setelah dihapus/edit
   const { kegiatan, loading, fetchKegiatan } = useKegiatan();
   
   const [selectedKegiatan, setSelectedKegiatan] = useState(null);
@@ -51,7 +50,7 @@ export default function DashboardKader() {
     try {
       await deleteKegiatan(id);
       setToast({ msg: 'Kegiatan berhasil dihapus', type: 'success' });
-      fetchKegiatan(); // Refresh data
+      fetchKegiatan();
     } catch (err) {
       setToast({ msg: 'Gagal menghapus: ' + err.message, type: 'error' });
     }
@@ -85,12 +84,22 @@ export default function DashboardKader() {
             Anda bertugas di wilayah <strong>{user?.rw || 'Desa Nanjung'}</strong>. 
             Pastikan seluruh kegiatan Posyandu bulan ini sudah diinput ke dalam sistem.
           </p>
-          <Link 
-            to="/input" 
-            className="inline-flex items-center gap-2 bg-white text-emerald-800 px-5 py-2.5 rounded-full font-bold text-sm shadow-sm hover:bg-emerald-50 transition"
-          >
-            <PlusCircle className="w-4 h-4" /> Input Kegiatan Baru
-          </Link>
+          
+          {/* TOMBOL AKSI (Diperbaiki, tidak ada tag yang menggantung) */}
+          <div className="flex flex-wrap gap-2">
+            <Link 
+              to="/input" 
+              className="inline-flex items-center gap-2 bg-white text-emerald-800 px-5 py-2.5 rounded-full font-bold text-sm shadow-sm hover:bg-emerald-50 transition"
+            >
+              <PlusCircle className="w-4 h-4" /> Input Kegiatan Baru
+            </Link>
+            <Link 
+              to="/laporan-kader" 
+              className="inline-flex items-center gap-2 bg-emerald-800 border border-emerald-600 text-white px-5 py-2.5 rounded-full font-bold text-sm shadow-sm hover:bg-emerald-900 transition"
+            >
+              <Printer className="w-4 h-4" /> Cetak Laporan Posyandu
+            </Link>
+          </div>
         </div>
       </div>
 
