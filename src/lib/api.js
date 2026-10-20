@@ -178,3 +178,23 @@ export const formatTanggal = (dateString) => {
     day: 'numeric', month: 'long', year: 'numeric'
   });
 };
+
+export const updateSasaran = async (id, payload) => {
+  const { data, error } = await supabase
+    .from('sasaran')
+    .update(payload)
+    .eq('id', id)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+};
+
+export const deleteSasaran = async (id) => {
+  const { error } = await supabase
+    .from('sasaran')
+    .delete()
+    .eq('id', id);
+  if (error) throw error;
+  return true;
+};
