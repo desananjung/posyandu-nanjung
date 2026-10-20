@@ -127,6 +127,8 @@ export default function LaporanKader() {
                   <thead>
                     <tr className="bg-zinc-50 border-b border-black">
                       <th className="border-r border-black p-2 w-8 text-center">No</th>
+                      <th className="border-r border-black p-2 w-8 text-center">No</th>
+<th className="border-r border-black p-2">Siklus Hidup (ILP)</th> {/* Tambahan */}
                       {/* HEADER DINAMIS BERDASARKAN BIDANG */}
                       {bidangId === 'sosial' && (
                         <>
@@ -182,7 +184,8 @@ export default function LaporanKader() {
                     {items.map((k, index) => (
                       <tr key={k.id} className="border-b border-black">
                         <td className="border-r border-black p-2 text-center">{index + 1}</td>
-                        
+                        <td className="border-r border-black p-2 text-center">{index + 1}</td>
+<td className="border-r border-black p-2 text-[10px]">{k.siklus_hidup || '-'}</td> {/* Tambahan */}
                         {/* KONTEN DINAMIS BERDASARKAN BIDANG */}
                         {bidangId === 'sosial' && (
                           <>

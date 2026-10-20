@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BIDANG, RW_LIST, POSYANDU_LIST } from '../lib/data';
+// Gabungkan semua import dari data.js ke dalam satu baris
+import { BIDANG, RW_LIST, POSYANDU_LIST, SIKLUS_HIDUP_LIST } from '../lib/data'; 
 import { useAuth } from '../context/AuthContext';
 import { createKegiatan, uploadFoto } from '../lib/api';
 import { Save, X, Camera, Loader2 } from 'lucide-react';
@@ -14,6 +15,7 @@ export default function InputKegiatan() {
   const [form, setForm] = useState({
     tanggal: new Date().toISOString().slice(0, 10),
     posyandu: user?.posyandu || POSYANDU_LIST[0].nama,
+    siklus_hidup: SIKLUS_HIDUP_LIST[0], // Default
     rw: user?.rw || POSYANDU_LIST.find(p => p.nama === (user?.posyandu || POSYANDU_LIST[0].nama))?.rw || 'RW01',
     bidang: user?.bidang || 'kesehatan',
     sub_bidang: '',
@@ -134,6 +136,16 @@ export default function InputKegiatan() {
             </select>
           </div>
         </div>
+        <div>
+  <label className="text-xs font-semibold block mb-1.5">Siklus Hidup Sasaran (ILP)</label>
+  <select
+    value={form.siklus_hidup}
+    onChange={(e) => setForm({ ...form, siklus_hidup: e.target.value })}
+    className="w-full rounded-xl border border-zinc-200 px-3 py-2.5 text-sm bg-zinc-50 focus:ring-2 focus:ring-emerald-500"
+  >
+    {SIKLUS_HIDUP_LIST.map((s) => <option key={s} value={s}>{s}</option>)}
+  </select>
+</div>
 
                 {/* BARIS 2: Posyandu & RW */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -82,3 +82,12 @@ export const JABATAN_LIST = [
   'Ketua Bidang Sosial',
   'Anggota / Kader Umum'
 ];
+
+export const SIKLUS_HIDUP_LIST = [
+  'Ibu Hamil, Bersalin, dan Nifas',
+  'Bayi dan Balita (0-5 Tahun)',
+  'Anak Usia Sekolah dan Remaja (6-18 Tahun)',
+  'Usia Dewasa (19-59 Tahun)',
+  'Lansia (≥ 60 Tahun)',
+  'Pengendalian Penyakit Menular' // Opsional, sesuai ILP [citation:7]
+];
