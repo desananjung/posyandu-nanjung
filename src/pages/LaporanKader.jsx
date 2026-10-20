@@ -93,7 +93,7 @@ export default function LaporanKader() {
         {/* KOP LAPORAN */}
         <div className="text-center border-b-4 border-double border-black pb-4 mb-6">
           <h1 className="text-xl font-bold uppercase">Laporan Kegiatan Posyandu 6 SPM</h1>
-          <h2 className="text-lg font-bold">Posyandu {user?.posyandu || user?.rw}</h2>
+          <h2 className="text-lg font-bold"> {user?.posyandu || user?.rw}</h2>
           <p className="text-sm">Desa Nanjung, Kecamatan Margaasih, Kabupaten Bandung</p>
           <p className="text-sm font-bold mt-2">Periode: {new Date(bulan).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}</p>
         </div>
