@@ -69,3 +69,16 @@ export const BULAN = [
   'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
   'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
 ];
+
+export const JABATAN_LIST = [
+  'Ketua Posyandu',
+  'Sekretaris',
+  'Bendahara',
+  'Ketua Bidang Pendidikan',
+  'Ketua Bidang Kesehatan',
+  'Ketua Bidang Pekerjaan Umum',
+  'Ketua Bidang Perumahan Rakyat',
+  'Ketua Bidang Trantibumlinmas',
+  'Ketua Bidang Sosial',
+  'Anggota / Kader Umum'
+];

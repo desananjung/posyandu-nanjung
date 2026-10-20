@@ -240,7 +240,7 @@ export default function LaporanKader() {
           </div>
           <div className="text-center w-64">
             <p>Nanjung, {new Date().toLocaleDateString('id-ID')}</p>
-            <p>Kader Posyandu</p>
+            <p>{user?.jabatan || 'Kader Posyandu'}</p> {/* Menampilkan jabatan */}
             <div className="h-20"></div>
             <p className="font-bold underline">{user?.nama}</p>
           </div>

@@ -61,14 +61,16 @@ export function AuthProvider({ children }) {
 
   // Gabungkan user + profile agar mudah dipakai
   const currentUser = profile ? {
-  id: user.id,
-  email: user.email,
-  nama: profile.nama,
-  role: profile.role,
-  bidang: profile.bidang,
-  rw: profile.rw,
-  posyandu: profile.posyandu // <--- Tambahan baru
-} : null;
+      id: user.id,
+      email: user.email,
+      nama: profile.nama,
+      role: profile.role,
+      bidang: profile.bidang,
+      rw: profile.rw,
+      posyandu: profile.posyandu,
+      jabatan: profile.jabatan // <--- Tambahkan ini
+    }
+ : null;
 
   return (
     <AuthContext.Provider

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useProfile } from '../hooks/useProfile';
 import { UserCog, Plus, X, Save, Loader2 } from 'lucide-react';
 import Toast from '../components/Toast';
-import { RW_LIST, POSYANDU_LIST } from '../lib/data';
+import { RW_LIST, POSYANDU_LIST, JABATAN_LIST } from '../lib/data';
 import { supabaseAdminAuth, supabase } from '../lib/supabase';
 
 export default function Users() {
@@ -18,7 +18,8 @@ export default function Users() {
     password: '',
     role: 'kader',
     rw: 'RW01',
-    posyandu: POSYANDU_LIST[0].nama
+    posyandu: POSYANDU_LIST[0].nama,
+    jabatan: 'Ketua' // <--- Tambahan Baru
   });
 
   // Fungsi Update Role/RW untuk user yang sudah ada
@@ -68,7 +69,8 @@ export default function Users() {
           .from('profiles')
           .update({ 
             rw: form.role === 'kader' ? form.rw : null,
-            posyandu: form.role === 'kader' ? form.posyandu : null 
+            posyandu: form.role === 'kader' ? form.posyandu : null,
+            jabatan: form.role === 'kader' ? form.jabatan : null // <--- Tambahan
           })
           .eq('id', data.user.id);
           
@@ -219,19 +221,28 @@ export default function Users() {
               </div>
 
               {form.role === 'kader' && (
-                <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-xl space-y-3">
-                  <div>
-                    <label className="text-xs font-bold text-emerald-800 block mb-1">Pilih Posyandu</label>
-                    <select value={form.posyandu} onChange={handlePosyanduChange} className="w-full rounded-xl border border-emerald-200 px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-emerald-500">
-                      {POSYANDU_LIST.map(p => <option key={p.id} value={p.nama}>{p.nama}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-xs font-bold text-emerald-800 block mb-1">RW (Otomatis)</label>
-                    <input type="text" value={form.rw} disabled className="w-full rounded-xl border border-emerald-200 px-3 py-2 text-sm bg-emerald-100/50 opacity-70 cursor-not-allowed" />
-                  </div>
-                </div>
-              )}
+  <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-xl space-y-3">
+    <div>
+      <label className="text-xs font-bold text-emerald-800 block mb-1">Pilih Posyandu</label>
+      <select value={form.posyandu} onChange={handlePosyanduChange} className="w-full rounded-xl border border-emerald-200 px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-emerald-500">
+        {POSYANDU_LIST.map(p => <option key={p.id} value={p.nama}>{p.nama}</option>)}
+      </select>
+    </div>
+
+    {/* Dropdown Jabatan */}
+    <div>
+      <label className="text-xs font-bold text-emerald-800 block mb-1">Jabatan Struktural</label>
+      <select value={form.jabatan} onChange={e => setForm({...form, jabatan: e.target.value})} className="w-full rounded-xl border border-emerald-200 px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-emerald-500">
+        {JABATAN_LIST.map(j => <option key={j} value={j}>{j}</option>)}
+      </select>
+    </div>
+
+    <div>
+      <label className="text-xs font-bold text-emerald-800 block mb-1">RW (Otomatis)</label>
+      <input type="text" value={form.rw} disabled className="w-full rounded-xl border border-emerald-200 px-3 py-2 text-sm bg-emerald-100/50 opacity-70 cursor-not-allowed" />
+    </div>
+  </div>
+)}
 
               <div className="pt-4 flex gap-2 justify-end">
                 <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 text-sm font-bold text-zinc-600 hover:bg-zinc-100 rounded-xl transition">Batal</button>
