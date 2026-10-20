@@ -1,16 +1,35 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react'; // Tambahkan useEffect
 import { useAuth } from '../context/AuthContext';
 import { useKegiatan } from '../hooks/useKegiatan';
 import { Printer, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { BIDANG } from '../lib/data';
+import { supabase } from '../lib/supabase';
 
 export default function LaporanKader() {
   const { user } = useAuth();
   const { kegiatan, loading } = useKegiatan();
-  const [bulan, setBulan] = useState(new Date().toISOString().slice(0, 7)); // format YYYY-MM
+  const [bulan, setBulan] = useState(new Date().toISOString().slice(0, 7)); 
+  const [jumlahKader, setJumlahKader] = useState(0);
 
-  // Filter kegiatan milik kader ini (berdasarkan RW / Posyandu) dan bulan yang dipilih
+  // Ambil jumlah kader aktif di RW yang sama
+  useEffect(() => {
+    const fetchKader = async () => {
+      const { count, error } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .eq('role', 'kader')
+        .eq('rw', user.rw);
+        
+      if (!error && count !== null) {
+        setJumlahKader(count);
+      }
+    };
+    
+    if (user?.rw) fetchKader();
+  }, [user]);
+
+  // Filter kegiatan milik kader ini dan bulan yang dipilih
   const laporanKegiatan = useMemo(() => {
     return kegiatan.filter(k => 
       (k.rw === user.rw || k.posyandu === user.posyandu) && 
@@ -76,7 +95,8 @@ export default function LaporanKader() {
             <div className="grid grid-cols-[140px_1fr]"><span>Desa / Kecamatan</span><span>: Nanjung / Margaasih</span></div>
           </div>
           <div>
-            <div className="grid grid-cols-[140px_1fr]"><span>Jumlah Kader Aktif</span><span>: 5 Orang</span></div>
+            {/* Hanya ada SATU baris Jumlah Kader Aktif di sini */}
+            <div className="grid grid-cols-[140px_1fr]"><span>Jumlah Kader Aktif</span><span>: {jumlahKader} Orang</span></div>
             <div className="grid grid-cols-[140px_1fr]"><span>Total Kegiatan</span><span>: {laporanKegiatan.length} Kegiatan</span></div>
           </div>
         </div>
