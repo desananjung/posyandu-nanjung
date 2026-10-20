@@ -19,7 +19,7 @@ export default function LaporanKader() {
         .from('profiles')
         .select('*', { count: 'exact', head: true })
         .eq('role', 'kader')
-        .eq('rw', user.rw);
+        .eq('posyandu', user.posyandu);
         
       if (!error && count !== null) {
         setJumlahKader(count);
