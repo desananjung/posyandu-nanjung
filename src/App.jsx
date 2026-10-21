@@ -3,6 +3,7 @@ import { useAuth } from './context/AuthContext';
 import Login from './components/Login';
 import Layout from './components/Layout';
 import InstallPWA from './components/InstallPWA';
+import SyncStatus from './components/SyncStatus';
 
 import DashboardAdmin from './pages/DashboardAdmin';
 import DashboardKoordinator from './pages/DashboardKoordinator';
@@ -69,6 +70,7 @@ export default function App() {
       
       {/* Tombol Instal PWA hanya muncul jika user sudah login */}
       {user && <InstallPWA />}
+      {user && <SyncStatus />} {/* <--- Tambahkan baris ini */}
     </>
   );
 }
