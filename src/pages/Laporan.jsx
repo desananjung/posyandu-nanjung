@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react';
 import { useKegiatan } from '../hooks/useKegiatan';
 import { FileSpreadsheet, Printer } from 'lucide-react';
-import { BIDANG } from '../lib/data';
+// Gabungkan semua import dari data.js ke dalam satu baris
+import { BIDANG, SIKLUS_HIDUP_LIST } from '../lib/data';
 import { exportToCSV, formatTanggal } from '../lib/api';
 import Toast from '../components/Toast';
 
@@ -24,6 +25,23 @@ export default function Laporan() {
       map[k.bidang].kegiatan += 1;
       map[k.bidang].sasaran += Number(k.sasaran) || 0;
     });
+    return map;
+  }, [filteredData]);
+
+    // Rekap per Siklus Hidup (ILP)
+  const rekapILP = useMemo(() => {
+    const map = {};
+    SIKLUS_HIDUP_LIST.forEach(siklus => {
+      map[siklus] = { kegiatan: 0, sasaran: 0 };
+    });
+
+    filteredData.forEach(k => {
+      const siklus = k.siklus_hidup || 'Lainnya';
+      if (!map[siklus]) map[siklus] = { kegiatan: 0, sasaran: 0 };
+      map[siklus].kegiatan += 1;
+      map[siklus].sasaran += Number(k.sasaran) || 0;
+    });
+
     return map;
   }, [filteredData]);
 
@@ -127,6 +145,27 @@ export default function Laporan() {
                 </tr>
               );
             })}
+          </tbody>
+        </table>
+
+                {/* Tabel Rekap Siklus Hidup (ILP) */}
+        <h3 className="font-bold text-lg mb-3 mt-6">Rekapitulasi Siklus Hidup (ILP)</h3>
+        <table className="w-full text-sm text-left border-collapse mb-6">
+          <thead>
+            <tr className="bg-zinc-50 print:bg-transparent">
+              <th className="px-4 py-2 border border-zinc-200 print:border-zinc-400">Siklus Hidup</th>
+              <th className="px-4 py-2 border border-zinc-200 print:border-zinc-400 text-center">Jml Kegiatan</th>
+              <th className="px-4 py-2 border border-zinc-200 print:border-zinc-400 text-center">Jml Sasaran</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.entries(rekapILP).map(([siklus, data]) => (
+              <tr key={siklus}>
+                <td className="px-4 py-2 border border-zinc-200 print:border-zinc-400 font-medium">{siklus}</td>
+                <td className="px-4 py-2 border border-zinc-200 print:border-zinc-400 text-center">{data.kegiatan}</td>
+                <td className="px-4 py-2 border border-zinc-200 print:border-zinc-400 text-center">{data.sasaran}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
 
