@@ -33,8 +33,8 @@ export default function Users() {
     setEditId(user.id);
     setForm({
       nama: user.nama || '',
-      email: user.email || '', // Email mungkin tidak tampil jika dari auth
-      password: '', // Biarkan kosong jika tidak ingin ganti password
+      email: user.email || '', 
+      password: '', // Biarkan kosong saat edit (tidak untuk ganti password)
       role: user.role || 'kader',
       rw: user.rw || 'RW01',
       posyandu: user.posyandu || POSYANDU_LIST[0].nama,
@@ -51,20 +51,22 @@ export default function Users() {
     setSaving(true);
     try {
       if (editId) {
-        // Mode Edit: Hanya update profil
+        // --- MODE EDIT ---
         await updateUserProfile(editId, {
           nama: form.nama,
           role: form.role,
           rw: form.role === 'kader' ? form.rw : null,
           posyandu: form.role === 'kader' ? form.posyandu : null,
-          jabatan: form.role === 'kader' ? form.jabatan : null
+          jabatan: form.role === 'kader' ? form.jabatan : null,
+          // email tidak diubah di sini demi keamanan
         });
-        setToast({ msg: 'Profil user diperbarui', type: 'success' });
+        setToast({ msg: 'Profil user berhasil diperbarui', type: 'success' });
       } else {
-        // Mode Tambah: Daftarkan ke Auth Supabase dulu
+        // --- MODE TAMBAH ---
         if (!form.email || !form.password) throw new Error('Email dan Password wajib diisi untuk user baru');
         if (form.password.length < 6) throw new Error('Password minimal 6 karakter');
 
+        // 1. Daftarkan ke Supabase Auth
         const { data, error } = await supabaseAdminAuth.auth.signUp({
           email: form.email,
           password: form.password,
@@ -72,12 +74,13 @@ export default function Users() {
         });
         if (error) throw error;
 
-        // Update profil dengan data tambahan
+        // 2. Lengkapi profil dengan email, RW, Posyandu, dan Jabatan
         if (data.user) {
           await updateUserProfile(data.user.id, {
             rw: form.role === 'kader' ? form.rw : null,
             posyandu: form.role === 'kader' ? form.posyandu : null,
-            jabatan: form.role === 'kader' ? form.jabatan : null
+            jabatan: form.role === 'kader' ? form.jabatan : null,
+            email: form.email // Simpan email ke tabel profiles agar bisa dilihat di aplikasi
           });
         }
         setToast({ msg: `Akun ${form.nama} berhasil dibuat`, type: 'success' });
@@ -150,7 +153,7 @@ export default function Users() {
                   <tr key={p.id} className="hover:bg-zinc-50/50">
                     <td className="px-4 py-3">
                       <div className="font-bold text-zinc-900">{p.nama}</div>
-                      <div className="text-xs text-zinc-500">{p.email || 'Email terdaftar di Auth'}</div>
+                      <div className="text-xs text-zinc-500">{p.email || '-'}</div>
                     </td>
                     <td className="px-4 py-3">
                       <div className="font-semibold capitalize">{p.role}</div>
