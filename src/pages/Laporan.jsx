@@ -28,7 +28,7 @@ export default function Laporan() {
     return map;
   }, [filteredData]);
 
-    // Rekap per Siklus Hidup (ILP)
+      // Rekap per Siklus Hidup (ILP) - Hanya untuk Bidang Kesehatan
   const rekapILP = useMemo(() => {
     const map = {};
     SIKLUS_HIDUP_LIST.forEach(siklus => {
@@ -36,10 +36,11 @@ export default function Laporan() {
     });
 
     filteredData.forEach(k => {
-      const siklus = k.siklus_hidup || 'Lainnya';
-      if (!map[siklus]) map[siklus] = { kegiatan: 0, sasaran: 0 };
-      map[siklus].kegiatan += 1;
-      map[siklus].sasaran += Number(k.sasaran) || 0;
+      // Hanya hitung jika bidangnya kesehatan dan siklus_hidup-nya terisi
+      if (k.bidang === 'kesehatan' && k.siklus_hidup) {
+        map[k.siklus_hidup].kegiatan += 1;
+        map[k.siklus_hidup].sasaran += Number(k.sasaran) || 0;
+      }
     });
 
     return map;
@@ -148,26 +149,27 @@ export default function Laporan() {
           </tbody>
         </table>
 
-                {/* Tabel Rekap Siklus Hidup (ILP) */}
-        <h3 className="font-bold text-lg mb-3 mt-6">Rekapitulasi Siklus Hidup (ILP)</h3>
-        <table className="w-full text-sm text-left border-collapse mb-6">
-          <thead>
-            <tr className="bg-zinc-50 print:bg-transparent">
-              <th className="px-4 py-2 border border-zinc-200 print:border-zinc-400">Siklus Hidup</th>
-              <th className="px-4 py-2 border border-zinc-200 print:border-zinc-400 text-center">Jml Kegiatan</th>
-              <th className="px-4 py-2 border border-zinc-200 print:border-zinc-400 text-center">Jml Sasaran</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Object.entries(rekapILP).map(([siklus, data]) => (
-              <tr key={siklus}>
-                <td className="px-4 py-2 border border-zinc-200 print:border-zinc-400 font-medium">{siklus}</td>
-                <td className="px-4 py-2 border border-zinc-200 print:border-zinc-400 text-center">{data.kegiatan}</td>
-                <td className="px-4 py-2 border border-zinc-200 print:border-zinc-400 text-center">{data.sasaran}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                        {/* Tabel Rekap Siklus Hidup (ILP) */}
+        {Object.values(rekapILP).some(data => data.kegiatan > 0) && (
+          <>
+            <h3 className="font-bold text-lg mb-3 mt-6">Rekapitulasi Siklus Hidup (ILP - Kesehatan)</h3>
+            <table className="w-full text-sm text-left border-collapse mb-6">
+              {/* ... (thead dan tbody sama seperti sebelumnya) ... */}
+              <tbody>
+                {Object.entries(rekapILP).map(([siklus, data]) => {
+                  if (data.kegiatan === 0) return null; // Sembunyikan siklus yang kosong
+                  return (
+                    <tr key={siklus}>
+                      <td className="px-4 py-2 border border-zinc-200 font-medium">{siklus}</td>
+                      <td className="px-4 py-2 border border-zinc-200 text-center">{data.kegiatan}</td>
+                      <td className="px-4 py-2 border border-zinc-200 text-center">{data.sasaran}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </>
+        )}
 
         {/* Tanda Tangan (Hanya muncul saat print) */}
         <div className="hidden print:flex justify-between mt-12">

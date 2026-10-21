@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-// Gabungkan semua import dari data.js ke dalam satu baris
 import { BIDANG, RW_LIST, POSYANDU_LIST, SIKLUS_HIDUP_LIST } from '../lib/data'; 
 import { useAuth } from '../context/AuthContext';
 import { createKegiatan, uploadFoto } from '../lib/api';
@@ -15,7 +14,7 @@ export default function InputKegiatan() {
   const [form, setForm] = useState({
     tanggal: new Date().toISOString().slice(0, 10),
     posyandu: user?.posyandu || POSYANDU_LIST[0].nama,
-    siklus_hidup: SIKLUS_HIDUP_LIST[0], // Default
+    siklus_hidup: '', // Kosongkan default agar kader memilih
     rw: user?.rw || POSYANDU_LIST.find(p => p.nama === (user?.posyandu || POSYANDU_LIST[0].nama))?.rw || 'RW01',
     bidang: user?.bidang || 'kesehatan',
     sub_bidang: '',
@@ -64,6 +63,11 @@ export default function InputKegiatan() {
     if (!form.nama_kegiatan) return setError('Isi nama kegiatan');
     if (!form.sasaran) return setError('Isi jumlah sasaran');
     if (!form.hasil) return setError('Isi hasil kegiatan');
+    
+    // Validasi tambahan: Jika bidang Kesehatan, Siklus Hidup wajib diisi
+    if (form.bidang === 'kesehatan' && !form.siklus_hidup) {
+      return setError('Pilih Siklus Hidup Sasaran (ILP) untuk bidang kesehatan');
+    }
 
     setLoading(true);
     try {
@@ -80,6 +84,8 @@ export default function InputKegiatan() {
 
       await createKegiatan({
         ...form,
+        // Jika bukan kesehatan, pastikan siklus_hidup dikirim sebagai null/kosong
+        siklus_hidup: form.bidang === 'kesehatan' ? form.siklus_hidup : null,
         sasaran: Number(form.sasaran),
         foto_url,
         status: 'draft'
@@ -128,26 +134,31 @@ export default function InputKegiatan() {
             <label className="text-xs font-semibold block mb-1.5">Bidang SPM</label>
             <select
               value={form.bidang}
-              onChange={(e) => setForm({ ...form, bidang: e.target.value, sub_bidang: '' })}
-              // HAPUS disabled={isKader && user?.bidang} agar kader bebas memilih bidang
+              onChange={(e) => setForm({ ...form, bidang: e.target.value, sub_bidang: '', siklus_hidup: '' })}
               className="w-full rounded-xl border border-zinc-200 px-3 py-2.5 text-sm bg-zinc-50 focus:ring-2 focus:ring-emerald-500"
             >
               {BIDANG.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
             </select>
           </div>
         </div>
-        <div>
-  <label className="text-xs font-semibold block mb-1.5">Siklus Hidup Sasaran (ILP)</label>
-  <select
-    value={form.siklus_hidup}
-    onChange={(e) => setForm({ ...form, siklus_hidup: e.target.value })}
-    className="w-full rounded-xl border border-zinc-200 px-3 py-2.5 text-sm bg-zinc-50 focus:ring-2 focus:ring-emerald-500"
-  >
-    {SIKLUS_HIDUP_LIST.map((s) => <option key={s} value={s}>{s}</option>)}
-  </select>
-</div>
 
-                {/* BARIS 2: Posyandu & RW */}
+        {/* SIKLUS HIDUP: Hanya Muncul Jika Bidang Kesehatan */}
+        {form.bidang === 'kesehatan' && (
+          <div className="animate-fade-in">
+            <label className="text-xs font-semibold block mb-1.5">Siklus Hidup Sasaran (ILP)</label>
+            <select
+              value={form.siklus_hidup || ''}
+              onChange={(e) => setForm({ ...form, siklus_hidup: e.target.value })}
+              className="w-full rounded-xl border border-zinc-200 px-3 py-2.5 text-sm bg-zinc-50 focus:ring-2 focus:ring-emerald-500"
+              required
+            >
+              <option value="">— Pilih Siklus Hidup —</option>
+              {SIKLUS_HIDUP_LIST.map((s) => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+        )}
+
+        {/* BARIS 2: Posyandu & RW */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="text-xs font-semibold block mb-1.5">Pilih Posyandu</label>
@@ -163,7 +174,6 @@ export default function InputKegiatan() {
               className="w-full rounded-xl border border-zinc-200 px-3 py-2.5 text-sm bg-zinc-50 focus:ring-2 focus:ring-emerald-500"
             >
               {POSYANDU_LIST.map((p) => (
-                // Gunakan p.nama sebagai value, bukan p.id
                 <option key={p.id} value={p.nama}>{p.nama} ({p.rw})</option>
               ))}
             </select>
