@@ -9,9 +9,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'pwa-192x192.png', 'pwa-512x512.png'],
       manifest: {
-        name: 'Posyandu 6 SPM Desa Nanjung',
-        short_name: 'Posyandu 6 SPM',
-        description: 'Aplikasi Pencatatan dan Pelaporan Posyandu Desa Nanjung',
+        name: 'SiCantik Desa Nanjung',
+        short_name: 'SiCantik',
+        description: 'Aplikasi Pencatatan dan Pelaporan SiCantik Desa Nanjung',
         theme_color: '#1A5D1A',
         background_color: '#F6F7F2',
         display: 'standalone',

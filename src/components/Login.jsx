@@ -57,11 +57,10 @@ export default function Login() {
               </div>
             </div>
             <h1 className="text-[32px] md:text-[38px] font-bold leading-[1.05]">
-              Dasbor<br />Posyandu 6 SPM
+              SiCantik<br />Desa Nanjung
             </h1>
             <p className="text-[12.5px] opacity-85 mt-4 leading-relaxed max-w-[320px]">
-              Satu aplikasi untuk Admin Desa, Koordinator Bidang, dan Kader RW.
-              Data tersimpan aman di cloud Supabase.
+              Sistem Informasi Cerdas untuk Keluarga Desa Nanjung.
             </p>
             <div className="mt-8 grid grid-cols-2 gap-3">
               <div className="rounded-xl bg-white/10 p-3">

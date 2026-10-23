@@ -76,7 +76,7 @@ export default function Layout({ children }) {
             <img src="/logo-desa.png" alt="Logo Desa" className="w-full h-full object-contain" />
             </div>
             <div>
-              <div className="font-bold text-sm text-zinc-900">Posyandu 6 SPM</div>
+              <div className="font-bold text-sm text-zinc-900">SiCantik</div>
               <div className="text-[11px] text-zinc-500">Desa Nanjung</div>
             </div>
           </div>
@@ -132,7 +132,7 @@ export default function Layout({ children }) {
       {/* Main Content */}
       <main className="flex-1 min-w-0 flex flex-col">
         <header className="md:hidden bg-white border-b border-zinc-200 p-4 flex items-center justify-between sticky top-0 z-30">
-          <div className="font-bold text-zinc-900">Posyandu 6 SPM</div>
+          <div className="font-bold text-zinc-900">SiCantik</div>
           <button onClick={() => setIsOpen(true)} className="p-2 bg-zinc-50 rounded-lg">
             <Menu className="w-5 h-5 text-zinc-600" />
           </button>
