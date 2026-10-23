@@ -32,6 +32,8 @@ export default function Layout({ children }) {
       { path: '/log-kunjungan', label: 'Log Kunjungan TPK', icon: ClipboardList },
       { path: '/laporan-bunda-paud', label: 'Laporan Bunda PAUD', icon: BookOpen },
       { path: '/bunda-paud', label: 'Bunda PAUD', icon: BookOpen },
+      { path: '/literasi', label: 'Form Literasi', icon: BookOpen },
+      { path: '/laporan-literasi', label: 'Laporan Literasi', icon: BookOpen },
     ],
     koordinator: [
       { path: '/dashboard', label: 'Dashboard Koordinator', icon: LayoutDashboard },
@@ -42,6 +44,7 @@ export default function Layout({ children }) {
       { path: '/tim-tpk', label: 'Data Tim TPK', icon: Users },
       { path: '/log-kunjungan', label: 'Log Kunjungan TPK', icon: ClipboardList },
       { path: '/laporan-bunda-paud', label: 'Laporan Bunda PAUD', icon: BookOpen },
+      { path: '/laporan-literasi', label: 'Laporan Literasi', icon: BookOpen },
     ],
     kader: [
       { path: '/dashboard', label: 'Dashboard Kader', icon: Home },
@@ -51,6 +54,7 @@ export default function Layout({ children }) {
       { path: '/laporan-tpk', label: 'Laporan TPK', icon: HeartPulse }, // Gunakan HeartPulse
       { path: '/log-kunjungan', label: 'Log Kunjungan TPK', icon: ClipboardList },
       { path: '/bunda-paud', label: 'Form Bunda PAUD', icon: BookOpen },
+      { path: '/literasi', label: 'Form Literasi', icon: BookOpen },
       
     ],
   };

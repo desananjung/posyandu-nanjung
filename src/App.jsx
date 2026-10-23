@@ -22,8 +22,9 @@ import LaporanTPK from './pages/LaporanTPK';
 import DataTimTPK from './pages/DataTimTPK';
 import LogKunjungan from './pages/LogKunjungan';
 import FormBundaPAUD from './pages/FormBundaPAUD';
-
 import LaporanBundaPAUD from './pages/LaporanBundaPAUD';
+import FormLiterasi from './pages/FormLiterasi';
+import LaporanLiterasi from './pages/LaporanLiterasi';
 
 function Protected({ children, roles }) {
   const { user, loading } = useAuth();
@@ -74,8 +75,9 @@ export default function App() {
         <Route path="/tim-tpk" element={<Protected roles={['admin', 'koordinator']}><DataTimTPK /></Protected>} />
         <Route path="/log-kunjungan" element={<Protected roles={['kader', 'admin', 'koordinator']}><LogKunjungan /></Protected>} />
         <Route path="/bunda-paud" element={<Protected roles={['admin', 'koordinator', 'kader']}><DashboardBundaPAUD /></Protected>} />
-        
         <Route path="/laporan-bunda-paud" element={<Protected roles={['admin', 'koordinator']}><LaporanBundaPAUD /></Protected>} />
+        <Route path="/literasi" element={<Protected><FormLiterasi /></Protected>} />
+        <Route path="/laporan-literasi" element={<Protected roles={['admin', 'koordinator']}><LaporanLiterasi /></Protected>} />
         {/* TAMBAHKAN RUTE INI */}
         <Route path="/laporan-kader" element={<Protected roles={['kader', 'admin', 'koordinator']}><LaporanKader /></Protected>} />
         <Route path="/users" element={<Protected roles={['admin']}><Users /></Protected>} />
