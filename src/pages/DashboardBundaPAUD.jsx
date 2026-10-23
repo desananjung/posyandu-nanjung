@@ -14,7 +14,6 @@ export default function DashboardBundaPAUD() {
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState(null);
 
-  // State Form (menyesuaikan tab)
   const [form, setForm] = useState({});
 
   const fetchData = async () => {
@@ -32,7 +31,6 @@ export default function DashboardBundaPAUD() {
 
   useEffect(() => {
     fetchData();
-    // Reset form saat ganti tab
     setForm({});
   }, [activeTab]);
 
@@ -72,26 +70,40 @@ export default function DashboardBundaPAUD() {
     if (activeTab === 'anak') {
       return (
         <>
-          <div>
-            <label className="text-xs font-bold block mb-1">Nama Anak *</label>
-            <input type="text" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, nama_anak: e.target.value})} required />
-          </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs font-bold block mb-1">Tanggal Lahir</label>
-              <input type="date" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, tanggal_lahir: e.target.value})} />
+              <label className="text-xs font-bold block mb-1">Nama Anak *</label>
+              <input type="text" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, nama_anak: e.target.value})} required />
             </div>
             <div>
-              <label className="text-xs font-bold block mb-1">Jenis Kelamin</label>
-              <select className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, jenis_kelamin: e.target.value})}>
-                <option value="L">Laki-laki</option>
-                <option value="P">Perempuan</option>
-              </select>
+              <label className="text-xs font-bold block mb-1">NIK Anak</label>
+              <input type="text" maxLength={16} className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, nik_anak: e.target.value})} />
             </div>
           </div>
           <div>
             <label className="text-xs font-bold block mb-1">Nama Orang Tua</label>
             <input type="text" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, nama_orang_tua: e.target.value})} />
+          </div>
+          <div>
+            <label className="text-xs font-bold block mb-1">NIK Orang Tua</label>
+            <input type="text" maxLength={16} className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, nik_orang_tua: e.target.value})} />
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <div>
+              <label className="text-xs font-bold block mb-1">Tgl Lahir</label>
+              <input type="date" className="w-full border rounded-xl px-2 py-2 text-sm" onChange={e => setForm({...form, tanggal_lahir: e.target.value})} />
+            </div>
+            <div>
+              <label className="text-xs font-bold block mb-1">L/P</label>
+              <select className="w-full border rounded-xl px-2 py-2 text-sm" onChange={e => setForm({...form, jenis_kelamin: e.target.value})}>
+                <option value="L">L</option>
+                <option value="P">P</option>
+              </select>
+            </div>
+            <div>
+              <label className="text-xs font-bold block mb-1">RT</label>
+              <input type="text" className="w-full border rounded-xl px-2 py-2 text-sm" onChange={e => setForm({...form, rt: e.target.value})} />
+            </div>
           </div>
           <div>
             <label className="text-xs font-bold block mb-1">Status PAUD</label>
@@ -104,6 +116,7 @@ export default function DashboardBundaPAUD() {
       );
     }
     if (activeTab === 'satuan') {
+      // ... (Form Satuan PAUD sama seperti sebelumnya)
       return (
         <>
           <div>
@@ -113,10 +126,10 @@ export default function DashboardBundaPAUD() {
           <div>
             <label className="text-xs font-bold block mb-1">Jenis Lembaga</label>
             <select className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, jenis: e.target.value})}>
-              <option value="TK">TK (Taman Kanak-kanak)</option>
-              <option value="KB">KB (Kelompok Bermain)</option>
-              <option value="SPS">SPS (Satuan PAUD Sejenis)</option>
-              <option value="TPA">TPA (Taman Penitipan Anak)</option>
+              <option value="TK">TK</option>
+              <option value="KB">KB</option>
+              <option value="SPS">SPS</option>
+              <option value="TPA">TPA</option>
             </select>
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -133,6 +146,7 @@ export default function DashboardBundaPAUD() {
       );
     }
     if (activeTab === 'dana') {
+      // ... (Form Dana sama seperti sebelumnya)
       return (
         <>
           <div>
@@ -153,7 +167,7 @@ export default function DashboardBundaPAUD() {
           </div>
           <div>
             <label className="text-xs font-bold block mb-1">Peruntukan</label>
-            <input type="text" className="w-full border rounded-xl px-3 py-2" placeholder="Contoh: Honor Guru, Alat Peraga" onChange={e => setForm({...form, peruntukan: e.target.value})} />
+            <input type="text" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, peruntukan: e.target.value})} />
           </div>
         </>
       );
@@ -161,20 +175,44 @@ export default function DashboardBundaPAUD() {
     if (activeTab === 'ats') {
       return (
         <>
-          <div>
-            <label className="text-xs font-bold block mb-1">Nama Anak Putus Sekolah *</label>
-            <input type="text" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, nama_anak: e.target.value})} required />
-          </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
+              <label className="text-xs font-bold block mb-1">Nama Anak *</label>
+              <input type="text" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, nama_anak: e.target.value})} required />
+            </div>
+            <div>
+              <label className="text-xs font-bold block mb-1">NIK Anak</label>
+              <input type="text" maxLength={16} className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, nik_anak: e.target.value})} />
+            </div>
+          </div>
+          <div>
+            <label className="text-xs font-bold block mb-1">NIK Orang Tua</label>
+            <input type="text" maxLength={16} className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, nik_orang_tua: e.target.value})} />
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <div>
               <label className="text-xs font-bold block mb-1">Umur</label>
-              <input type="number" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, umur: e.target.value})} />
+              <input type="number" className="w-full border rounded-xl px-2 py-2 text-sm" onChange={e => setForm({...form, umur: e.target.value})} />
+            </div>
+            <div>
+              <label className="text-xs font-bold block mb-1">RT</label>
+              <input type="text" className="w-full border rounded-xl px-2 py-2 text-sm" onChange={e => setForm({...form, rt: e.target.value})} />
             </div>
             <div>
               <label className="text-xs font-bold block mb-1">RW</label>
-              <select className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, rw: e.target.value})}>
+              <select className="w-full border rounded-xl px-2 py-2 text-sm" onChange={e => setForm({...form, rw: e.target.value})}>
                 {RW_LIST.map(rw => <option key={rw} value={rw}>{rw}</option>)}
               </select>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs font-bold block mb-1">Pendidikan Terakhir</label>
+              <input type="text" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, pendidikan_terakhir: e.target.value})} />
+            </div>
+            <div>
+              <label className="text-xs font-bold block mb-1">Kelas Terakhir</label>
+              <input type="text" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, kelas_terakhir: e.target.value})} />
             </div>
           </div>
           <div>
@@ -182,8 +220,12 @@ export default function DashboardBundaPAUD() {
             <input type="text" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, alasan_putus: e.target.value})} />
           </div>
           <div>
-            <label className="text-xs font-bold block mb-1">Tindak Lanjut</label>
-            <input type="text" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, tindak_lanjut: e.target.value})} />
+            <label className="text-xs font-bold block mb-1">Status Penanganan</label>
+            <select className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, status_penanganan: e.target.value})}>
+              <option value="Belum Ditangani">Belum Ditangani</option>
+              <option value="Sedang Diproses">Sedang Diproses</option>
+              <option value="Sudah Kembali Sekolah">Sudah Kembali Sekolah</option>
+            </select>
           </div>
         </>
       );
@@ -194,7 +236,6 @@ export default function DashboardBundaPAUD() {
     <div className="space-y-6 relative">
       {toast && <Toast message={toast.msg} type={toast.type} onClose={() => setToast(null)} />}
 
-      {/* Header & Tombol Tambah */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
         <div>
           <h1 className="text-2xl font-bold text-zinc-900">Dashboard Bunda PAUD</h1>
@@ -205,7 +246,6 @@ export default function DashboardBundaPAUD() {
         </button>
       </div>
 
-      {/* Navigasi Tab */}
       <div className="flex overflow-x-auto gap-2 pb-2">
         {[
           { id: 'anak', label: 'Pendataan Anak', icon: Users },
@@ -225,36 +265,49 @@ export default function DashboardBundaPAUD() {
         ))}
       </div>
 
-      {/* Tabel Data */}
       <div className="bg-white border border-zinc-200 rounded-2xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left">
+          <table className="w-full text-sm text-left whitespace-nowrap">
             <thead className="bg-zinc-50 text-zinc-500 text-xs uppercase">
               <tr>
                 <th className="px-4 py-3">No</th>
                 <th className="px-4 py-3">
-                  {activeTab === 'anak' ? 'Nama Anak' : activeTab === 'satuan' ? 'Nama Lembaga' : activeTab === 'dana' ? 'Peruntukan' : 'Nama Anak'}
+                  {activeTab === 'anak' ? 'Nama Anak / NIK' : activeTab === 'satuan' ? 'Nama Lembaga' : activeTab === 'dana' ? 'Peruntukan' : 'Nama Anak / NIK'}
                 </th>
                 <th className="px-4 py-3">
-                  {activeTab === 'anak' ? 'Status' : activeTab === 'satuan' ? 'Jenis' : activeTab === 'dana' ? 'Jumlah (Rp)' : 'Alasan'}
+                  {activeTab === 'anak' ? 'Orang Tua' : activeTab === 'satuan' ? 'Jenis' : activeTab === 'dana' ? 'Jumlah (Rp)' : 'Pendidikan / Kelas'}
+                </th>
+                <th className="px-4 py-3">
+                  {activeTab === 'anak' ? 'Status PAUD' : activeTab === 'satuan' ? 'Guru / Siswa' : activeTab === 'dana' ? 'Sumber' : 'Status Penanganan'}
                 </th>
                 <th className="px-4 py-3 text-center">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-100">
               {loading ? (
-                <tr><td colSpan="4" className="text-center py-8">Memuat data...</td></tr>
+                <tr><td colSpan="5" className="text-center py-8">Memuat data...</td></tr>
               ) : data.length === 0 ? (
-                <tr><td colSpan="4" className="text-center py-8 text-zinc-500">Belum ada data pada tab ini.</td></tr>
+                <tr><td colSpan="5" className="text-center py-8 text-zinc-500">Belum ada data pada tab ini.</td></tr>
               ) : (
                 data.map((item, idx) => (
                   <tr key={item.id} className="hover:bg-zinc-50/50">
                     <td className="px-4 py-3">{idx + 1}</td>
-                    <td className="px-4 py-3 font-bold">
-                      {activeTab === 'anak' ? item.nama_anak : activeTab === 'satuan' ? item.nama_lembaga : activeTab === 'dana' ? item.peruntukan : item.nama_anak}
+                    <td className="px-4 py-3">
+                      <div className="font-bold text-zinc-900">
+                        {activeTab === 'anak' ? item.nama_anak : activeTab === 'satuan' ? item.nama_lembaga : activeTab === 'dana' ? item.peruntukan : item.nama_anak}
+                      </div>
+                      <div className="text-[11px] text-zinc-500">
+                        {activeTab === 'anak' || activeTab === 'ats' ? (item.nik_anak || '-') : ''}
+                      </div>
                     </td>
                     <td className="px-4 py-3">
-                      {activeTab === 'anak' ? item.status_paud : activeTab === 'satuan' ? item.jenis : activeTab === 'dana' ? `Rp ${Number(item.jumlah_dana).toLocaleString('id-ID')}` : item.alasan_putus}
+                      <div>{activeTab === 'anak' ? (item.nama_orang_tua || '-') : activeTab === 'satuan' ? item.jenis : activeTab === 'dana' ? `Rp ${Number(item.jumlah_dana || 0).toLocaleString('id-ID')}` : `${item.pendidikan_terakhir || '-'} / ${item.kelas_terakhir || '-'}`}</div>
+                      <div className="text-[11px] text-zinc-500">
+                        {activeTab === 'anak' || activeTab === 'ats' ? (item.nik_orang_tua ? `NIK: ${item.nik_orang_tua}` : '') : ''}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      {activeTab === 'anak' ? item.status_paud : activeTab === 'satuan' ? `${item.jumlah_guru || 0} / ${item.jumlah_siswa || 0}` : activeTab === 'dana' ? item.sumber_dana : <span className="font-bold text-amber-600">{item.status_penanganan}</span>}
                     </td>
                     <td className="px-4 py-3 text-center">
                       <button onClick={() => handleHapus(item.id)} className="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition">
@@ -269,7 +322,6 @@ export default function DashboardBundaPAUD() {
         </div>
       </div>
 
-      {/* Modal Form */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl w-full max-w-md shadow-xl overflow-hidden animate-fade-in">
