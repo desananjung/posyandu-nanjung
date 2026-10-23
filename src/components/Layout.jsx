@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { 
   LayoutDashboard, ClipboardList, Users, ListTodo, FileBarChart, 
-  UserCog, Settings2, LogOut, Menu, X, MapPin, Home, HeartPulse, HeartHandshake
+  UserCog, Settings2, LogOut, Menu, X, MapPin, Home, HeartPulse, HeartHandshake, BookOpen
 } from 'lucide-react';
 
 export default function Layout({ children }) {
@@ -30,6 +30,8 @@ export default function Layout({ children }) {
       { path: '/laporan-tpk', label: 'Laporan TPK', icon: HeartPulse }, // Gunakan HeartPulse
       { path: '/tim-tpk', label: 'Data Tim TPK', icon: Users },
       { path: '/log-kunjungan', label: 'Log Kunjungan TPK', icon: ClipboardList },
+      { path: '/laporan-bunda-paud', label: 'Laporan Bunda PAUD', icon: BookOpen },
+      { path: '/bunda-paud', label: 'Bunda PAUD', icon: BookOpen },
     ],
     koordinator: [
       { path: '/dashboard', label: 'Dashboard Koordinator', icon: LayoutDashboard },
@@ -39,6 +41,7 @@ export default function Layout({ children }) {
       { path: '/laporan', label: 'Laporan', icon: FileBarChart },
       { path: '/tim-tpk', label: 'Data Tim TPK', icon: Users },
       { path: '/log-kunjungan', label: 'Log Kunjungan TPK', icon: ClipboardList },
+      { path: '/laporan-bunda-paud', label: 'Laporan Bunda PAUD', icon: BookOpen },
     ],
     kader: [
       { path: '/dashboard', label: 'Dashboard Kader', icon: Home },
@@ -47,6 +50,8 @@ export default function Layout({ children }) {
       { path: '/tpk', label: 'Form Pendampingan TPK', icon: HeartHandshake }, // Gunakan icon yang relevan
       { path: '/laporan-tpk', label: 'Laporan TPK', icon: HeartPulse }, // Gunakan HeartPulse
       { path: '/log-kunjungan', label: 'Log Kunjungan TPK', icon: ClipboardList },
+      { path: '/bunda-paud', label: 'Form Bunda PAUD', icon: BookOpen },
+      
     ],
   };
 
