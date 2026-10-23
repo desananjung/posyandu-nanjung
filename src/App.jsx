@@ -16,6 +16,8 @@ import Laporan from './pages/Laporan';
 import LaporanKader from './pages/LaporanKader'; // <-- Pastikan ini di-import
 import Users from './pages/Users';
 import Settings from './pages/Settings';
+import FormTPK from './pages/FormTPK';
+import LaporanTPK from './pages/LaporanTPK';
 
 function Protected({ children, roles }) {
   const { user, loading } = useAuth();
@@ -61,6 +63,9 @@ export default function App() {
         <Route path="/sasaran" element={<Protected><DataSasaran /></Protected>} />
         <Route path="/monitoring" element={<Protected roles={['admin', 'koordinator']}><Monitoring /></Protected>} />
         <Route path="/laporan" element={<Protected roles={['admin', 'koordinator']}><Laporan /></Protected>} />
+        <Route path="/tpk" element={<Protected roles={['kader', 'admin', 'koordinator']}><FormTPK /></Protected>} />
+        <Route path="/laporan-tpk" element={<Protected roles={['admin', 'koordinator']}><LaporanTPK /></Protected>} />
+
         {/* TAMBAHKAN RUTE INI */}
         <Route path="/laporan-kader" element={<Protected roles={['kader', 'admin', 'koordinator']}><LaporanKader /></Protected>} />
         <Route path="/users" element={<Protected roles={['admin']}><Users /></Protected>} />

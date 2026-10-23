@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import {
-  LayoutDashboard, ClipboardList, Users, ListTodo,
-  FileBarChart, UserCog, Settings, LogOut, Menu, X, Home
+import { 
+  LayoutDashboard, ClipboardList, Users, ListTodo, FileBarChart, 
+  UserCog, Settings2, LogOut, Menu, X, MapPin, Home, HeartPulse, HeartHandshake
 } from 'lucide-react';
 
 export default function Layout({ children }) {
@@ -26,7 +26,8 @@ export default function Layout({ children }) {
       { path: '/monitoring', label: 'Monitoring', icon: ListTodo },
       { path: '/laporan', label: 'Laporan', icon: FileBarChart },
       { path: '/users', label: 'Manajemen User', icon: UserCog },
-      { path: '/settings', label: 'Pengaturan', icon: Settings },
+      { path: '/settings', label: 'Pengaturan', icon: Settings2 },
+      { path: '/laporan-tpk', label: 'Laporan TPK', icon: HeartPulse }, // Gunakan HeartPulse
     ],
     koordinator: [
       { path: '/dashboard', label: 'Dashboard Koordinator', icon: LayoutDashboard },
@@ -39,6 +40,7 @@ export default function Layout({ children }) {
       { path: '/dashboard', label: 'Dashboard Kader', icon: Home },
       { path: '/input', label: 'Input Cepat', icon: ClipboardList },
       { path: '/sasaran', label: 'Sasaran RW Saya', icon: Users },
+      { path: '/tpk', label: 'Pendampingan TPK', icon: HeartPulse }, // Gunakan icon yang relevan
     ],
   };
 
