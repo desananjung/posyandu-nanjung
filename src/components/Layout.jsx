@@ -28,6 +28,8 @@ export default function Layout({ children }) {
       { path: '/users', label: 'Manajemen User', icon: UserCog },
       { path: '/settings', label: 'Pengaturan', icon: Settings2 },
       { path: '/laporan-tpk', label: 'Laporan TPK', icon: HeartPulse }, // Gunakan HeartPulse
+      { path: '/tim-tpk', label: 'Data Tim TPK', icon: Users },
+      { path: '/log-kunjungan', label: 'Log Kunjungan TPK', icon: ClipboardList },
     ],
     koordinator: [
       { path: '/dashboard', label: 'Dashboard Koordinator', icon: LayoutDashboard },
@@ -35,12 +37,16 @@ export default function Layout({ children }) {
       { path: '/sasaran', label: 'Data Sasaran', icon: Users },
       { path: '/monitoring', label: 'Monitoring', icon: ListTodo },
       { path: '/laporan', label: 'Laporan', icon: FileBarChart },
+      { path: '/tim-tpk', label: 'Data Tim TPK', icon: Users },
+      { path: '/log-kunjungan', label: 'Log Kunjungan TPK', icon: ClipboardList },
     ],
     kader: [
       { path: '/dashboard', label: 'Dashboard Kader', icon: Home },
       { path: '/input', label: 'Input Cepat', icon: ClipboardList },
       { path: '/sasaran', label: 'Sasaran RW Saya', icon: Users },
-      { path: '/tpk', label: 'Pendampingan TPK', icon: HeartPulse }, // Gunakan icon yang relevan
+      { path: '/tpk', label: 'Form Pendampingan TPK', icon: HeartHandshake }, // Gunakan icon yang relevan
+      { path: '/laporan-tpk', label: 'Laporan TPK', icon: HeartPulse }, // Gunakan HeartPulse
+      { path: '/log-kunjungan', label: 'Log Kunjungan TPK', icon: ClipboardList },
     ],
   };
 

@@ -18,6 +18,8 @@ import Users from './pages/Users';
 import Settings from './pages/Settings';
 import FormTPK from './pages/FormTPK';
 import LaporanTPK from './pages/LaporanTPK';
+import DataTimTPK from './pages/DataTimTPK';
+import LogKunjungan from './pages/LogKunjungan';
 
 function Protected({ children, roles }) {
   const { user, loading } = useAuth();
@@ -65,7 +67,8 @@ export default function App() {
         <Route path="/laporan" element={<Protected roles={['admin', 'koordinator']}><Laporan /></Protected>} />
         <Route path="/tpk" element={<Protected roles={['kader', 'admin', 'koordinator']}><FormTPK /></Protected>} />
         <Route path="/laporan-tpk" element={<Protected roles={['admin', 'koordinator']}><LaporanTPK /></Protected>} />
-
+        <Route path="/tim-tpk" element={<Protected roles={['admin', 'koordinator']}><DataTimTPK /></Protected>} />
+        <Route path="/log-kunjungan" element={<Protected roles={['kader', 'admin', 'koordinator']}><LogKunjungan /></Protected>} />
         {/* TAMBAHKAN RUTE INI */}
         <Route path="/laporan-kader" element={<Protected roles={['kader', 'admin', 'koordinator']}><LaporanKader /></Protected>} />
         <Route path="/users" element={<Protected roles={['admin']}><Users /></Protected>} />
