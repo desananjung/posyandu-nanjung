@@ -172,7 +172,7 @@ export default function DashboardBundaPAUD() {
         </>
       );
     }
-    if (activeTab === 'ats') {
+        if (activeTab === 'ats') {
       return (
         <>
           <div className="grid grid-cols-2 gap-3">
@@ -185,15 +185,25 @@ export default function DashboardBundaPAUD() {
               <input type="text" maxLength={16} className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, nik_anak: e.target.value})} />
             </div>
           </div>
+          
           <div>
             <label className="text-xs font-bold block mb-1">NIK Orang Tua</label>
             <input type="text" maxLength={16} className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, nik_orang_tua: e.target.value})} />
           </div>
-          <div className="grid grid-cols-3 gap-2">
+
+          {/* GANTI UMUR MENJADI TEMPAT & TANGGAL LAHIR */}
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs font-bold block mb-1">Umur</label>
-              <input type="number" className="w-full border rounded-xl px-2 py-2 text-sm" onChange={e => setForm({...form, umur: e.target.value})} />
+              <label className="text-xs font-bold block mb-1">Tempat Lahir</label>
+              <input type="text" className="w-full border rounded-xl px-3 py-2" placeholder="Cth: Bandung" onChange={e => setForm({...form, tempat_lahir: e.target.value})} />
             </div>
+            <div>
+              <label className="text-xs font-bold block mb-1">Tanggal Lahir</label>
+              <input type="date" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, tanggal_lahir: e.target.value})} />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-2">
             <div>
               <label className="text-xs font-bold block mb-1">RT</label>
               <input type="text" className="w-full border rounded-xl px-2 py-2 text-sm" onChange={e => setForm({...form, rt: e.target.value})} />
@@ -204,17 +214,17 @@ export default function DashboardBundaPAUD() {
                 {RW_LIST.map(rw => <option key={rw} value={rw}>{rw}</option>)}
               </select>
             </div>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="text-xs font-bold block mb-1">Pendidikan Terakhir</label>
-              <input type="text" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, pendidikan_terakhir: e.target.value})} />
-            </div>
             <div>
               <label className="text-xs font-bold block mb-1">Kelas Terakhir</label>
-              <input type="text" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, kelas_terakhir: e.target.value})} />
+              <input type="text" className="w-full border rounded-xl px-2 py-2 text-sm" onChange={e => setForm({...form, kelas_terakhir: e.target.value})} />
             </div>
           </div>
+
+          <div>
+            <label className="text-xs font-bold block mb-1">Pendidikan Terakhir</label>
+            <input type="text" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, pendidikan_terakhir: e.target.value})} />
+          </div>
+
           <div>
             <label className="text-xs font-bold block mb-1">Alasan Putus Sekolah</label>
             <input type="text" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, alasan_putus: e.target.value})} />
@@ -300,10 +310,12 @@ export default function DashboardBundaPAUD() {
                         {activeTab === 'anak' || activeTab === 'ats' ? (item.nik_anak || '-') : ''}
                       </div>
                     </td>
-                    <td className="px-4 py-3">
+                                        <td className="px-4 py-3">
                       <div>{activeTab === 'anak' ? (item.nama_orang_tua || '-') : activeTab === 'satuan' ? item.jenis : activeTab === 'dana' ? `Rp ${Number(item.jumlah_dana || 0).toLocaleString('id-ID')}` : `${item.pendidikan_terakhir || '-'} / ${item.kelas_terakhir || '-'}`}</div>
                       <div className="text-[11px] text-zinc-500">
+                        {/* Tambahkan info tempat/tgl lahir untuk tab ATS */}
                         {activeTab === 'anak' || activeTab === 'ats' ? (item.nik_orang_tua ? `NIK: ${item.nik_orang_tua}` : '') : ''}
+                        {activeTab === 'ats' && item.tempat_lahir && ` | ${item.tempat_lahir}, ${item.tanggal_lahir || ''}`}
                       </div>
                     </td>
                     <td className="px-4 py-3">
