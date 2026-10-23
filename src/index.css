@@ -2,31 +2,41 @@
 @tailwind components;
 @tailwind utilities;
 
-/* --- PRINT STYLES --- */
-@media print {
-  /* Sembunyikan semua elemen UI kecuali konten laporan */
-  body { background: white; }
-  aside, header, .print\:hidden { display: none !important; }
+:root {
+  /* Warna Utama SiCantik */
+  --primary: #D81B60; /* Pink Magenta */
+  --primary-2: #AD1457; /* Pink Gelap (untuk hover) */
+  --primary-light: #FCE4EC; /* Pink Sangat Muda */
   
-  /* Atur margin kertas */
-  @page { margin: 1.5cm; }
+  --accent: #8E24AA; /* Ungu (untuk aksen/ikon) */
+  --accent-light: #F3E5F5;
   
-  /* Pastikan teks hitam */
-  * { color: black !important; }
+  --bg: #FDFBFB; /* Putih kemerahan yang sangat lembut */
+  --surface: #FFFFFF;
+  --surface-2: #F9F9F9;
+  --border: #F0E6E6; 
+  
+  --text: #3E2723; /* Cokelat gelap (lebih hangat dari hitam) */
+  --text-muted: #8D6E63;
 }
-/* --- PRINT STYLES UNTUK LAPORAN --- */
-@media print {
-  @page {
-    size: landscape; /* Laporan lebar jadi lebih baik landscape */
-    margin: 1cm;
-  }
-  body {
-    background: white;
-  }
-  .print\:hidden {
-    display: none !important;
-  }
-  .page-break-inside-avoid {
-    page-break-inside: avoid;
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1A1114;
+    --surface: #24161B;
+    --surface-2: #2E1C22;
+    --border: #3D252E;
+    --text: #FCE4EC;
+    --text-muted: #BCAAA4;
   }
 }
+
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
