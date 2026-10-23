@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import * as XLSX from 'xlsx';
 
 // ============ KEGIATAN ============
 
@@ -223,4 +224,91 @@ export const deleteUserProfile = async (id) => {
   // 2. Ubah email di auth agar tidak bisa login (opsional, jika Anda punya akses)
   // Jika tidak punya akses, setidaknya profil sudah dinonaktifkan.
   return true;
+};
+export const backupDataKeExcel = async () => {
+  try {
+    // 1. Ambil semua data dari Supabase
+    const { data: kegiatan } = await supabase.from('kegiatan').select('*');
+    const { data: sasaran } = await supabase.from('sasaran').select('*');
+    const { data: tpk } = await supabase.from('pendampingan_tpk').select('*');
+    const { data: paudAnak } = await supabase.from('paud_anak').select('*');
+    const { data: paudAts } = await supabase.from('paud_ats').select('*');
+
+    // 2. Buat Workbook Excel
+    const wb = XLSX.utils.book_new();
+
+    // 3. Masukkan data ke Sheet yang berbeda-beda
+    const wsKegiatan = XLSX.utils.json_to_sheet(kegiatan || []);
+    XLSX.utils.book_append_sheet(wb, wsKegiatan, 'Kegiatan 6 SPM');
+
+    const wsSasaran = XLSX.utils.json_to_sheet(sasaran || []);
+    XLSX.utils.book_append_sheet(wb, wsSasaran, 'Data Sasaran');
+
+    const wsTpk = XLSX.utils.json_to_sheet(tpk || []);
+    XLSX.utils.book_append_sheet(wb, wsTpk, 'Pendampingan TPK');
+
+    const wsPaudAnak = XLSX.utils.json_to_sheet(paudAnak || []);
+    XLSX.utils.book_append_sheet(wb, wsPaudAnak, 'Anak PAUD');
+
+    const wsPaudAts = XLSX.utils.json_to_sheet(paudAts || []);
+    XLSX.utils.book_append_sheet(wb, wsPaudAts, 'Anak Putus Sekolah');
+
+    // 4. Unduh File
+    const tanggal = new Date().toISOString().slice(0, 10);
+    XLSX.writeFile(wb, `Backup_Posyandu_Nanjung_${tanggal}.xlsx`);
+    
+    return true;
+  } catch (error) {
+    console.error("Gagal backup:", error);
+    throw error;
+  }
+};
+// Fungsi Helper untuk mengunduh file CSV
+const downloadCSV = (data, filename) => {
+  if (!data || !data.length) {
+    alert(`Data ${filename} kosong.`);
+    return;
+  }
+  const headers = Object.keys(data[0]);
+  const csvRows = data.map(row => 
+    headers.map(header => {
+      let cell = row[header] === null || row[header] === undefined ? '' : row[header];
+      if (typeof cell === 'string' && cell.includes(',')) {
+        cell = `"${cell.replace(/"/g, '""')}"`;
+      }
+      return cell;
+    }).join(',')
+  );
+  const csvString = [headers.join(','), ...csvRows].join('\n');
+  const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.setAttribute('download', filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+// Fungsi Utama Backup CSV
+export const backupDataKeCSV = async () => {
+  try {
+    const tanggal = new Date().toISOString().slice(0, 10);
+
+    const { data: kegiatan } = await supabase.from('kegiatan').select('*');
+    downloadCSV(kegiatan, `Backup_Kegiatan_${tanggal}.csv`);
+
+    const { data: sasaran } = await supabase.from('sasaran').select('*');
+    downloadCSV(sasaran, `Backup_Sasaran_${tanggal}.csv`);
+
+    const { data: tpk } = await supabase.from('pendampingan_tpk').select('*');
+    downloadCSV(tpk, `Backup_TPK_${tanggal}.csv`);
+
+    const { data: paud } = await supabase.from('paud_anak').select('*');
+    downloadCSV(paud, `Backup_PAUD_${tanggal}.csv`);
+
+    return true;
+  } catch (error) {
+    console.error("Gagal backup CSV:", error);
+    throw error;
+  }
 };
