@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
-import { Users, School, Coins, AlertTriangle, Plus, Trash2, X, Save, Loader2 } from 'lucide-react';
+import { Users, School, Coins, AlertTriangle, Plus, Trash2, X, Save, Loader2, Calendar } from 'lucide-react';
 import Toast from '../components/Toast';
 import { RW_LIST, POSYANDU_LIST } from '../lib/data';
 
 export default function DashboardBundaPAUD() {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState('anak'); // 'anak', 'satuan', 'dana', 'ats'
+  // Tambahkan 'kegiatan' ke dalam state tab
+  const [activeTab, setActiveTab] = useState('anak'); 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -20,6 +21,7 @@ export default function DashboardBundaPAUD() {
     setLoading(true);
     let tableName = '';
     if (activeTab === 'anak') tableName = 'paud_anak';
+    if (activeTab === 'kegiatan') tableName = 'paud_kegiatan'; // <-- Tabel baru
     if (activeTab === 'satuan') tableName = 'paud_satuan';
     if (activeTab === 'dana') tableName = 'paud_dana';
     if (activeTab === 'ats') tableName = 'paud_ats';
@@ -39,11 +41,12 @@ export default function DashboardBundaPAUD() {
     setSaving(true);
     let tableName = '';
     if (activeTab === 'anak') tableName = 'paud_anak';
+    if (activeTab === 'kegiatan') tableName = 'paud_kegiatan';
     if (activeTab === 'satuan') tableName = 'paud_satuan';
     if (activeTab === 'dana') tableName = 'paud_dana';
     if (activeTab === 'ats') tableName = 'paud_ats';
 
-    const { error } = await supabase.from(tableName).insert([form]);
+    const { error } = await supabase.from(tableName).insert([{ ...form, created_by: user.id }]);
     if (error) setToast({ msg: 'Gagal: ' + error.message, type: 'error' });
     else {
       setToast({ msg: 'Data berhasil disimpan', type: 'success' });
@@ -57,6 +60,7 @@ export default function DashboardBundaPAUD() {
     if (!confirm('Hapus data ini?')) return;
     let tableName = '';
     if (activeTab === 'anak') tableName = 'paud_anak';
+    if (activeTab === 'kegiatan') tableName = 'paud_kegiatan';
     if (activeTab === 'satuan') tableName = 'paud_satuan';
     if (activeTab === 'dana') tableName = 'paud_dana';
     if (activeTab === 'ats') tableName = 'paud_ats';
@@ -115,8 +119,60 @@ export default function DashboardBundaPAUD() {
         </>
       );
     }
+
+    // --- FORM KEGIATAN BARU ---
+    if (activeTab === 'kegiatan') {
+      return (
+        <>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs font-bold block mb-1">Tanggal *</label>
+              <input type="date" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, tanggal: e.target.value})} required />
+            </div>
+            <div>
+              <label className="text-xs font-bold block mb-1">Jenis Kegiatan</label>
+              <select className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, jenis: e.target.value})}>
+                <option value="Penyuluhan">Penyuluhan</option>
+                <option value="Bimtek">Bimtek</option>
+                <option value="Kelas Orang Tua">Kelas Orang Tua</option>
+                <option value="Lomba">Lomba</option>
+                <option value="Rapat">Rapat</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label className="text-xs font-bold block mb-1">Judul Kegiatan *</label>
+            <input type="text" className="w-full border rounded-xl px-3 py-2" placeholder="Cth: Bimtek Bunda PAUD" onChange={e => setForm({...form, judul: e.target.value})} required />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs font-bold block mb-1">Lokasi</label>
+              <input type="text" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, lokasi: e.target.value})} />
+            </div>
+            <div>
+              <label className="text-xs font-bold block mb-1">Mitra</label>
+              <input type="text" className="w-full border rounded-xl px-3 py-2" placeholder="Cth: Puskesmas" onChange={e => setForm({...form, mitra: e.target.value})} />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs font-bold block mb-1">Sasaran</label>
+              <input type="text" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, sasaran: e.target.value})} />
+            </div>
+            <div>
+              <label className="text-xs font-bold block mb-1">Jumlah Peserta</label>
+              <input type="number" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, jumlah_peserta: e.target.value})} />
+            </div>
+          </div>
+          <div>
+            <label className="text-xs font-bold block mb-1">Hasil Kegiatan</label>
+            <textarea rows={2} className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, hasil: e.target.value})} />
+          </div>
+        </>
+      );
+    }
+
     if (activeTab === 'satuan') {
-      // ... (Form Satuan PAUD sama seperti sebelumnya)
       return (
         <>
           <div>
@@ -146,7 +202,6 @@ export default function DashboardBundaPAUD() {
       );
     }
     if (activeTab === 'dana') {
-      // ... (Form Dana sama seperti sebelumnya)
       return (
         <>
           <div>
@@ -172,7 +227,7 @@ export default function DashboardBundaPAUD() {
         </>
       );
     }
-        if (activeTab === 'ats') {
+    if (activeTab === 'ats') {
       return (
         <>
           <div className="grid grid-cols-2 gap-3">
@@ -185,13 +240,10 @@ export default function DashboardBundaPAUD() {
               <input type="text" maxLength={16} className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, nik_anak: e.target.value})} />
             </div>
           </div>
-          
           <div>
             <label className="text-xs font-bold block mb-1">NIK Orang Tua</label>
             <input type="text" maxLength={16} className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, nik_orang_tua: e.target.value})} />
           </div>
-
-          {/* GANTI UMUR MENJADI TEMPAT & TANGGAL LAHIR */}
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-xs font-bold block mb-1">Tempat Lahir</label>
@@ -202,7 +254,6 @@ export default function DashboardBundaPAUD() {
               <input type="date" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, tanggal_lahir: e.target.value})} />
             </div>
           </div>
-
           <div className="grid grid-cols-3 gap-2">
             <div>
               <label className="text-xs font-bold block mb-1">RT</label>
@@ -219,12 +270,10 @@ export default function DashboardBundaPAUD() {
               <input type="text" className="w-full border rounded-xl px-2 py-2 text-sm" onChange={e => setForm({...form, kelas_terakhir: e.target.value})} />
             </div>
           </div>
-
           <div>
             <label className="text-xs font-bold block mb-1">Pendidikan Terakhir</label>
             <input type="text" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, pendidikan_terakhir: e.target.value})} />
           </div>
-
           <div>
             <label className="text-xs font-bold block mb-1">Alasan Putus Sekolah</label>
             <input type="text" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, alasan_putus: e.target.value})} />
@@ -248,17 +297,19 @@ export default function DashboardBundaPAUD() {
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-zinc-900">Dashboard Bunda PAUD</h1>
-          <p className="text-sm text-zinc-500">Manajemen data Pendidikan Anak Usia Dini & Literasi.</p>
+          <h1 className="text-2xl font-bold text-[var(--text)]">Dashboard Bunda PAUD</h1>
+          <p className="text-sm text-[var(--text-muted)]">Manajemen data Pendidikan Anak Usia Dini.</p>
         </div>
-        <button onClick={() => setShowModal(true)} className="bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2">
+        <button onClick={() => setShowModal(true)} className="bg-[var(--primary)] text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-[var(--primary-2)] transition">
           <Plus className="w-4 h-4" /> Tambah Data
         </button>
       </div>
 
+      {/* Navigasi Tab - Tambahkan Tab Kegiatan */}
       <div className="flex overflow-x-auto gap-2 pb-2">
         {[
           { id: 'anak', label: 'Pendataan Anak', icon: Users },
+          { id: 'kegiatan', label: 'Kegiatan PAUD', icon: Calendar }, // <-- TAB BARU
           { id: 'satuan', label: 'Satuan PAUD', icon: School },
           { id: 'dana', label: 'Advokasi Dana', icon: Coins },
           { id: 'ats', label: 'Anak Putus Sekolah', icon: AlertTriangle },
@@ -267,7 +318,7 @@ export default function DashboardBundaPAUD() {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition ${
-              activeTab === tab.id ? 'bg-emerald-700 text-white shadow' : 'bg-white border border-zinc-200 text-zinc-600 hover:bg-zinc-50'
+              activeTab === tab.id ? 'bg-[var(--primary)] text-white shadow-sm' : 'bg-[var(--surface)] border border-[var(--border)] text-[var(--text-muted)] hover:bg-[var(--surface-2)]'
             }`}
           >
             <tab.icon className="w-4 h-4" /> {tab.label}
@@ -275,51 +326,53 @@ export default function DashboardBundaPAUD() {
         ))}
       </div>
 
-      <div className="bg-white border border-zinc-200 rounded-2xl overflow-hidden shadow-sm">
+      {/* Tabel Data */}
+      <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left whitespace-nowrap">
-            <thead className="bg-zinc-50 text-zinc-500 text-xs uppercase">
+            <thead className="bg-[var(--surface-2)] text-[var(--text-muted)] text-xs uppercase">
               <tr>
                 <th className="px-4 py-3">No</th>
                 <th className="px-4 py-3">
-                  {activeTab === 'anak' ? 'Nama Anak / NIK' : activeTab === 'satuan' ? 'Nama Lembaga' : activeTab === 'dana' ? 'Peruntukan' : 'Nama Anak / NIK'}
+                  {activeTab === 'anak' ? 'Nama Anak / NIK' : activeTab === 'kegiatan' ? 'Judul Kegiatan' : activeTab === 'satuan' ? 'Nama Lembaga' : activeTab === 'dana' ? 'Peruntukan' : 'Nama Anak / NIK'}
                 </th>
                 <th className="px-4 py-3">
-                  {activeTab === 'anak' ? 'Orang Tua' : activeTab === 'satuan' ? 'Jenis' : activeTab === 'dana' ? 'Jumlah (Rp)' : 'Pendidikan / Kelas'}
+                  {activeTab === 'anak' ? 'Orang Tua' : activeTab === 'kegiatan' ? 'Jenis / Tanggal' : activeTab === 'satuan' ? 'Jenis' : activeTab === 'dana' ? 'Jumlah (Rp)' : 'Pendidikan / Kelas'}
                 </th>
                 <th className="px-4 py-3">
-                  {activeTab === 'anak' ? 'Status PAUD' : activeTab === 'satuan' ? 'Guru / Siswa' : activeTab === 'dana' ? 'Sumber' : 'Status Penanganan'}
+                  {activeTab === 'anak' ? 'Status PAUD' : activeTab === 'kegiatan' ? 'Lokasi / Peserta' : activeTab === 'satuan' ? 'Guru / Siswa' : activeTab === 'dana' ? 'Sumber' : 'Status Penanganan'}
                 </th>
                 <th className="px-4 py-3 text-center">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100">
+            <tbody className="divide-y divide-[var(--border)]">
               {loading ? (
                 <tr><td colSpan="5" className="text-center py-8">Memuat data...</td></tr>
               ) : data.length === 0 ? (
-                <tr><td colSpan="5" className="text-center py-8 text-zinc-500">Belum ada data pada tab ini.</td></tr>
+                <tr><td colSpan="5" className="text-center py-8 text-[var(--text-muted)]">Belum ada data pada tab ini.</td></tr>
               ) : (
                 data.map((item, idx) => (
-                  <tr key={item.id} className="hover:bg-zinc-50/50">
+                  <tr key={item.id} className="hover:bg-[var(--surface-2)] transition">
                     <td className="px-4 py-3">{idx + 1}</td>
                     <td className="px-4 py-3">
-                      <div className="font-bold text-zinc-900">
-                        {activeTab === 'anak' ? item.nama_anak : activeTab === 'satuan' ? item.nama_lembaga : activeTab === 'dana' ? item.peruntukan : item.nama_anak}
+                      <div className="font-bold text-[var(--text)]">
+                        {activeTab === 'anak' ? item.nama_anak : activeTab === 'kegiatan' ? item.judul : activeTab === 'satuan' ? item.nama_lembaga : activeTab === 'dana' ? item.peruntukan : item.nama_anak}
                       </div>
-                      <div className="text-[11px] text-zinc-500">
+                      <div className="text-[11px] text-[var(--text-muted)]">
                         {activeTab === 'anak' || activeTab === 'ats' ? (item.nik_anak || '-') : ''}
                       </div>
                     </td>
-                                        <td className="px-4 py-3">
-                      <div>{activeTab === 'anak' ? (item.nama_orang_tua || '-') : activeTab === 'satuan' ? item.jenis : activeTab === 'dana' ? `Rp ${Number(item.jumlah_dana || 0).toLocaleString('id-ID')}` : `${item.pendidikan_terakhir || '-'} / ${item.kelas_terakhir || '-'}`}</div>
-                      <div className="text-[11px] text-zinc-500">
-                        {/* Tambahkan info tempat/tgl lahir untuk tab ATS */}
+                    <td className="px-4 py-3">
+                      <div>
+                        {activeTab === 'anak' ? (item.nama_orang_tua || '-') : activeTab === 'kegiatan' ? `${item.jenis} (${item.tanggal})` : activeTab === 'satuan' ? item.jenis : activeTab === 'dana' ? `Rp ${Number(item.jumlah_dana || 0).toLocaleString('id-ID')}` : `${item.pendidikan_terakhir || '-'} / ${item.kelas_terakhir || '-'}`}
+                      </div>
+                      <div className="text-[11px] text-[var(--text-muted)]">
                         {activeTab === 'anak' || activeTab === 'ats' ? (item.nik_orang_tua ? `NIK: ${item.nik_orang_tua}` : '') : ''}
                         {activeTab === 'ats' && item.tempat_lahir && ` | ${item.tempat_lahir}, ${item.tanggal_lahir || ''}`}
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      {activeTab === 'anak' ? item.status_paud : activeTab === 'satuan' ? `${item.jumlah_guru || 0} / ${item.jumlah_siswa || 0}` : activeTab === 'dana' ? item.sumber_dana : <span className="font-bold text-amber-600">{item.status_penanganan}</span>}
+                      {activeTab === 'anak' ? item.status_paud : activeTab === 'kegiatan' ? `${item.lokasi || '-'} / ${item.jumlah_peserta || 0} org` : activeTab === 'satuan' ? `${item.jumlah_guru || 0} / ${item.jumlah_siswa || 0}` : activeTab === 'dana' ? item.sumber_dana : <span className="font-bold text-amber-600">{item.status_penanganan}</span>}
                     </td>
                     <td className="px-4 py-3 text-center">
                       <button onClick={() => handleHapus(item.id)} className="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition">
@@ -334,18 +387,19 @@ export default function DashboardBundaPAUD() {
         </div>
       </div>
 
+      {/* Modal Form */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl w-full max-w-md shadow-xl overflow-hidden animate-fade-in">
-            <div className="p-4 border-b border-zinc-100 flex justify-between items-center bg-zinc-50">
-              <h3 className="font-bold text-zinc-900">Tambah Data {activeTab.toUpperCase()}</h3>
-              <button onClick={() => setShowModal(false)} className="text-zinc-400 hover:text-zinc-700"><X className="w-5 h-5"/></button>
+          <div className="bg-[var(--surface)] rounded-2xl w-full max-w-md shadow-xl overflow-hidden animate-fade-in">
+            <div className="p-4 border-b border-[var(--border)] flex justify-between items-center bg-[var(--surface-2)]">
+              <h3 className="font-bold text-[var(--text)]">Tambah Data {activeTab.toUpperCase()}</h3>
+              <button onClick={() => setShowModal(false)} className="text-[var(--text-muted)] hover:text-[var(--text)]"><X className="w-5 h-5"/></button>
             </div>
             <form onSubmit={handleSimpan} className="p-5 space-y-4 max-h-[80vh] overflow-y-auto">
               {renderForm()}
-              <div className="pt-4 flex gap-2 justify-end border-t border-zinc-100">
-                <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 text-sm font-bold text-zinc-600 hover:bg-zinc-100 rounded-xl">Batal</button>
-                <button type="submit" disabled={saving} className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-sm">
+              <div className="pt-4 flex gap-2 justify-end border-t border-[var(--border)]">
+                <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 text-sm font-bold text-[var(--text-muted)] hover:bg-[var(--surface-2)] rounded-xl transition">Batal</button>
+                <button type="submit" disabled={saving} className="inline-flex items-center gap-2 bg-[var(--primary)] hover:bg-[var(--primary-2)] text-white px-4 py-2 rounded-xl text-sm font-bold shadow-sm transition">
                   {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} Simpan
                 </button>
               </div>
