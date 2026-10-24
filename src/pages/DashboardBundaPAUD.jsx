@@ -120,7 +120,7 @@ export default function DashboardBundaPAUD() {
       );
     }
 
-    // --- FORM KEGIATAN BARU ---
+        // --- FORM KEGIATAN BARU ---
     if (activeTab === 'kegiatan') {
       return (
         <>
@@ -130,43 +130,57 @@ export default function DashboardBundaPAUD() {
               <input type="date" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, tanggal: e.target.value})} required />
             </div>
             <div>
-              <label className="text-xs font-bold block mb-1">Jenis Kegiatan</label>
+              <label className="text-xs font-bold block mb-1">Kategori Program</label>
               <select className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, jenis: e.target.value})}>
-                <option value="Penyuluhan">Penyuluhan</option>
-                <option value="Bimtek">Bimtek</option>
-                <option value="Kelas Orang Tua">Kelas Orang Tua</option>
-                <option value="Lomba">Lomba</option>
-                <option value="Rapat">Rapat</option>
+                <option value="Pendataan">Perencanaan & Pendataan (Musrenbang, Profil PAUD)</option>
+                <option value="Sosialisasi">Sosialisasi & Advokasi (Ayo ke PAUD, Parenting)</option>
+                <option value="Kesehatan">Kesehatan & PAUD HI (Stunting, Imunisasi, DDTK)</option>
               </select>
             </div>
           </div>
           <div>
-            <label className="text-xs font-bold block mb-1">Judul Kegiatan *</label>
-            <input type="text" className="w-full border rounded-xl px-3 py-2" placeholder="Cth: Bimtek Bunda PAUD" onChange={e => setForm({...form, judul: e.target.value})} required />
+            <label className="text-xs font-bold block mb-1">Judul/Nama Kegiatan *</label>
+            <input type="text" className="w-full border rounded-xl px-3 py-2" placeholder="Cth: Musrenbangdes PAUD" onChange={e => setForm({...form, judul: e.target.value})} required />
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="text-xs font-bold block mb-1">Lokasi</label>
-              <input type="text" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, lokasi: e.target.value})} />
-            </div>
-            <div>
-              <label className="text-xs font-bold block mb-1">Mitra</label>
-              <input type="text" className="w-full border rounded-xl px-3 py-2" placeholder="Cth: Puskesmas" onChange={e => setForm({...form, mitra: e.target.value})} />
-            </div>
-          </div>
+          
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-xs font-bold block mb-1">Sasaran</label>
-              <input type="text" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, sasaran: e.target.value})} />
+              <select className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, sasaran: e.target.value})}>
+                <option value="Anak PAUD">Anak PAUD (0-6 Tahun)</option>
+                <option value="Orang Tua">Orang Tua / Wali</option>
+                <option value="Guru PAUD">Guru / Pengelola PAUD</option>
+                <option value="Lembaga PAUD">Lembaga (TK/KB/SPS)</option>
+              </select>
             </div>
             <div>
               <label className="text-xs font-bold block mb-1">Jumlah Peserta</label>
               <input type="number" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, jumlah_peserta: e.target.value})} />
             </div>
           </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs font-bold block mb-1">Lokasi</label>
+              <input type="text" className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, lokasi: e.target.value})} />
+            </div>
+            <div>
+              <label className="text-xs font-bold block mb-1">Mitra / Kerjasama</label>
+              <input type="text" className="w-full border rounded-xl px-3 py-2" placeholder="Cth: Posyandu, KPM, Puskesmas" onChange={e => setForm({...form, mitra: e.target.value})} />
+            </div>
+          </div>
+
           <div>
-            <label className="text-xs font-bold block mb-1">Hasil Kegiatan</label>
-            <textarea rows={2} className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, hasil: e.target.value})} />
+            <label className="text-xs font-bold block mb-1">Hasil / Kesepakatan</label>
+            <textarea rows={2} className="w-full border rounded-xl px-3 py-2" placeholder="Cth: Disepakati penambahan 1 KB di RW 05" onChange={e => setForm({...form, hasil: e.target.value})} />
+          </div>
+          <div>
+            <label className="text-xs font-bold block mb-1">Kendala</label>
+            <textarea rows={2} className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, kendala: e.target.value})} />
+          </div>
+          <div>
+            <label className="text-xs font-bold block mb-1">Tindak Lanjut</label>
+            <textarea rows={2} className="w-full border rounded-xl px-3 py-2" onChange={e => setForm({...form, tindak_lanjut: e.target.value})} />
           </div>
         </>
       );
